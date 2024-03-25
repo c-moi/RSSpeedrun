@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RSSpeedrun</string>
+    <string name="title_activity_profil_utilisateur">UserProfileActivity</string>
+    <string name="title_activity_edit_profile_user">EditProfileUserActivity</string>
 </resources>
