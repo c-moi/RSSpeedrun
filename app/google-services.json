@@ -1,8 +1,8 @@
 {
   "project_info": {
     "project_number": "1023202684066",
-    "project_id": "rsspeedrun-25a70",
     "firebase_url": "https://rsspeedrun-25a70-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "rsspeedrun-25a70",
     "storage_bucket": "rsspeedrun-25a70.appspot.com"
   },
   "client": [

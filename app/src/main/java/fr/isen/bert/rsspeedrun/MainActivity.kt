@@ -34,10 +34,45 @@ class MainActivity : ComponentActivity() {
 
                     val database = Firebase.database
 
+
+                    // Write a message to the database
+                    BDDWriting(database, "test", "ok1")
+
+                    // Read a message to the database
+                    BDDReading(database, "test")
                 }
             }
         }
     }
+}
+
+@Composable
+fun BDDWriting(database: FirebaseDatabase, name: String, content: String) {
+
+    val myRef = database.getReference(name)
+    myRef.setValue(content)
+}
+
+@Composable
+fun BDDReading(database: FirebaseDatabase, name: String) {
+
+    val myRef = database.getReference(name)
+    var value:Any? = ""
+    myRef.addValueEventListener(object: ValueEventListener {
+
+        override fun onDataChange(snapshot: DataSnapshot) {
+            // This method is called once with the initial value and again
+            // whenever data at this location is updated.
+            value = snapshot.getValue()
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            value = "error"
+        }
+
+    })
+
+    Text(text = "ceci est $value")
 }
 
 @Composable
