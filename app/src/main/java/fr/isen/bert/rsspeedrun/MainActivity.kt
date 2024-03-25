@@ -3,14 +3,23 @@ package fr.isen.bert.rsspeedrun
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -50,7 +59,19 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun LikeIcon() {
+    Icon(imageVector = Icons.Filled.Favorite, contentDescription = "Like")
+}
 
+@Composable
+fun CommentIcon() {
+    Icon(imageVector = Icons.Filled.Add, contentDescription = "Comment")
+}
+@Composable
+fun ResponseIcon() {
+    Icon(imageVector = Icons.Outlined.ArrowForward, contentDescription = "Respond")
+}
 
 @Composable
 fun PostList(posts: MutableList<Post>, modifier: Modifier = Modifier) {
@@ -79,23 +100,24 @@ fun PostView(
 
     Surface(
         modifier = modifier.padding(8.dp),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(1.dp, Color.Black) // Ajoute un contour rectangulaire autour du post de base
     ) {
         Column(modifier = modifier.padding(16.dp)) {
             Text(text = post.content)
             Text(text = "Likes: ${post.likes}")
             Row(modifier = modifier.padding(top = 8.dp)) {
-                Button(onClick = { onLike() }) {
-                    Text("Like")
+                IconButton(onClick = { onLike() }) {
+                    LikeIcon()
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = {
+                IconButton(onClick = {
                     if (commentText.isNotBlank()) {
                         onCommentAdded(commentText)
                         commentText = ""
                     }
-                }) {
-                    Text("Comment")
+                },) {
+                    CommentIcon()
                 }
             }
             OutlinedTextField(
@@ -113,7 +135,8 @@ fun PostView(
                         // Cela pourrait ressembler à ajouter un nouveau Comment à la liste des réponses du commentaire.
                         val newResponse = Comment(id = UUID.randomUUID().toString(), postId = post.id, content = responseText)
                         comment.addResponse(newResponse)
-                    }
+                    },
+                    modifier = Modifier.padding(start = 16.dp) // Ajoute une marge à gauche pour les commentaires imbriqués
                 )
             }
         }
@@ -140,17 +163,17 @@ fun CommentView(
             Text(text = comment.content)
             Text(text = "Likes: ${comment.likes}")
             Row(modifier = Modifier.padding(top = 8.dp)) {
-                Button(onClick = { onLike() }) {
-                    Text("Like")
+                IconButton(onClick = { onLike() }) {
+                    LikeIcon()
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = {
+                IconButton(onClick = {
                     if (responseText.isNotBlank()) {
                         onRespond(responseText)
                         responseText = ""
                     }
                 }) {
-                    Text("Respond")
+                    ResponseIcon()
                 }
             }
             OutlinedTextField(
@@ -161,13 +184,22 @@ fun CommentView(
             )
             comment.responses.forEach { response ->
                 // Affichage récursif des réponses comme des commentaires
-                CommentView(comment = response, onLike = { response.addLike() }, onRespond = { newResponseText ->
-                    response.addResponse(Comment(id = UUID.randomUUID().toString(), postId = response.postId, content = newResponseText))
-                })
+                CommentView(
+                    comment = response,
+                    onLike = { /* Ajoutez la logique pour gérer le like ici. Par exemple: */ response.addLike() },
+                    onRespond = { newResponseText ->
+                        // Ajoutez la logique pour ajouter une réponse au commentaire ici.
+                        // Cela pourrait ressembler à ajouter un nouveau Comment à la liste des réponses du commentaire.
+                        val newResponse = Comment(id = UUID.randomUUID().toString(), postId = response.postId, content = newResponseText)
+                        response.addResponse(newResponse)
+                    },
+                    modifier = Modifier.padding(start = 16.dp) // Ajoute une marge à gauche pour les commentaires imbriqués
+                )
             }
         }
     }
 }
+
 
 
 
