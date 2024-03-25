@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1023202684066",
+    "project_id": "rsspeedrun-25a70",
+    "firebase_url": "https://rsspeedrun-25a70-default-rtdb.europe-west1.firebasedatabase.app",
+    "storage_bucket": "rsspeedrun-25a70.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023202684066:android:f2d69d0c71dc4da4ccfbfb",
+        "android_client_info": {
+          "package_name": "fr.isen.bert.rsspeedrun"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm-BWI_PSgvimXOdxQ8c1iPfBzwfFVr2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
