@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import fr.isen.bert.rsspeedrun.data.userManager
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,7 +36,15 @@ class MainActivity : ComponentActivity() {
                     val database = Firebase.database
                     val myRef = database.getReference("message")
 
-                    myRef.setValue("Hello, World2!")
+                    myRef.setValue("Hello, World3!")
+
+                    val emmanuel = userManager()
+                    emmanuel.createUser(
+                        "emmanuel", "bert", "cmoi",
+                        "", "2002/08/26",
+                        "emmanuel.bert@gmail.com",
+                        "cpaslebon"
+                    )
 
                 }
             }

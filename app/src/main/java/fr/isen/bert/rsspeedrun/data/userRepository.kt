@@ -1,12 +1,14 @@
 package fr.isen.bert.rsspeedrun.data
 
+import com.google.firebase.Firebase
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
 import fr.isen.bert.rsspeedrun.model.User
 
 
 class userRepository {
 
-    private val database = FirebaseDatabase.getInstance()
+    private val database = Firebase.database
     private val usersRef = database.getReference("users")
 
     fun readUser() {
