@@ -1,6 +1,8 @@
 package fr.isen.bert.rsspeedrun.data
 
 import com.google.firebase.database.FirebaseDatabase
+import fr.isen.bert.rsspeedrun.model.User
+
 
 class userRepository {
 
