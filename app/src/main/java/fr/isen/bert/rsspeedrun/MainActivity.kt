@@ -23,20 +23,8 @@ import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            RSSpeedrunTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    //Greeting("Android")
+        setContentView(R.layout.activity_main)
 
-                    val database = Firebase.database
-
-                }
-            }
-        }
     }
 }
 

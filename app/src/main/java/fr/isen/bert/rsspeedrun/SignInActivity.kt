@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import fr.isen.bert.rsspeedrun.databinding.ActivitySignInBinding
 
 class SignInActivity : AppCompatActivity() {
@@ -43,13 +44,20 @@ class SignInActivity : AppCompatActivity() {
 
             if (email.isNotEmpty() && pass.isNotEmpty()) {
 
-                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
-                    if (it.isSuccessful) {
+                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {task ->
+                    if (task.isSuccessful) {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
+                        finish()
+                    }
+                }.addOnFailureListener { exception ->
+                    // Cette partie du code sera exécutée si la connexion échoue
+                    if (exception is FirebaseAuthInvalidCredentialsException) {
+                        // Le mot de passe est incorrect
+                        Toast.makeText(this, "Mot de passe incorrect", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-
+                        // Une autre erreur s'est produite
+                        Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             } else {
@@ -68,18 +76,6 @@ class SignInActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-    /**private fun checkUserLoggedIn() {
-        // Vérifier si un utilisateur est déjà connecté
-        val currentUser = firebaseAuth.currentUser
-        if (currentUser != null) {
-            // Si un utilisateur est déjà connecté, rediriger vers MainActivity
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish() // Optionnel : terminer SignInActivity pour éviter de revenir en arrière
-        } else {
-            // Si aucun utilisateur n'est connecté, afficher un message d'invite pour se connecter
-            Toast.makeText(this, "Please Sign In", Toast.LENGTH_SHORT).show()
-        }
-    }**/
+
 
 }
