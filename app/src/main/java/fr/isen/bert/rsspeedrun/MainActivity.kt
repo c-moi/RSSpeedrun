@@ -2,10 +2,10 @@ package fr.isen.bert.rsspeedrun
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -49,16 +49,17 @@ class MainActivity : ComponentActivity() {
     // Function to handle logout click
     private fun handleLogout() {
         // Replace this with your actual implementation to logout the user
-        Toast.makeText(this, "Logout Clicked", Toast.LENGTH_SHORT).show()
     }
 }
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
+    Button(
+        onClick = { /* Do something */ },
         modifier = modifier
-    )
+    ) {
+        Text("Hello $name!")
+    }
 }
 
 @Preview(showBackground = true)

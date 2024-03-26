@@ -68,5 +68,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation ("io.coil-kt:coil-compose:2.1.0") // Vérifiez la dernière version disponible
+    implementation ("androidx.activity:activity-ktx:1.4.0")
 
 }

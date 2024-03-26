@@ -5,8 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -74,6 +75,8 @@ fun UserProfilePageScreen(user: User, onEditProfileClicked: () -> Unit, onLogout
             onEditProfileClicked = onEditProfileClicked,
             onLogoutClicked = onLogoutClicked
         )
+        Spacer(modifier = Modifier.height(32.dp))
+        PostsList(posts = generateDummyPosts())
     }
 }
 
@@ -122,17 +125,70 @@ fun ActionButtons(onEditProfileClicked: () -> Unit, onLogoutClicked: () -> Unit)
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        Button(
+        IconButton(
             onClick = onEditProfileClicked,
             modifier = Modifier.padding(8.dp)
         ) {
-            Text("Editer le profil")
+            Icon(
+                painter = painterResource(id = R.drawable.paramets), // Remplacez R.drawable.ic_edit_profile par votre propre icône
+                contentDescription = "Edit Profile"
+            )
         }
-        Button(
+        IconButton(
             onClick = onLogoutClicked,
             modifier = Modifier.padding(8.dp)
         ) {
-            Text("Se déconnecter")
+            Icon(
+                painter = painterResource(id = R.drawable.deconnexion), // Remplacez R.drawable.ic_logout par votre propre icône
+                contentDescription = "Logout"
+            )
         }
     }
+}
+
+@Composable
+fun PostsList(posts: List<Post>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        items(posts) { post ->
+            PostItem(post = post)
+        }
+    }
+}
+
+@Composable
+fun PostItem(post: Post) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Text(text = post.title, style = MaterialTheme.typography.titleSmall)
+        Text(text = post.content, style = MaterialTheme.typography.bodyLarge)
+        Image(
+            painter = painterResource(id = post.imageResourceId),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+data class Post(
+    val id: Int,
+    val title: String,
+    val content: String,
+    val imageResourceId: Int
+)
+
+fun generateDummyPosts(): List<Post> {
+    return listOf(
+        Post(1, "Post Title 1", "Content of post 1", R.drawable.image1),
+        Post(2, "Post Title 2", "Content of post 2", R.drawable.image2),
+        Post(3, "Post Title 3", "Content of post 3", R.drawable.image3)
+    )
 }
