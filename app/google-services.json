@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "904880471802",
-    "project_id": "rsspeedrun-eefcf",
-    "storage_bucket": "rsspeedrun-eefcf.appspot.com"
+    "project_number": "676898469644",
+    "project_id": "rsspeedrun-e4d81",
+    "storage_bucket": "rsspeedrun-e4d81.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:904880471802:android:734ab35fc05caf4db31343",
+        "mobilesdk_app_id": "1:676898469644:android:c27b7cec5eab3d55043b29",
         "android_client_info": {
           "package_name": "fr.isen.bert.rsspeedrun"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDG3vt-JD7ghvNs1XpkedJmG6CzkyyD2CM"
+          "current_key": "AIzaSyBNzjoyeyLmpkNrkqMIAWeHEuCBTLx7kd0"
         }
       ],
       "services": {
