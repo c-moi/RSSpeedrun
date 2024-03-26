@@ -1,6 +1,9 @@
 package fr.isen.bert.rsspeedrun
 
+import Comment
+import Post
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -34,6 +37,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import java.util.*
 
 class MainActivity : ComponentActivity() {
@@ -105,6 +109,8 @@ fun PostView(
     var commentText by remember { mutableStateOf("") }
     var isCommenting by remember { mutableStateOf(false) } // État local pour gérer la visibilité du champ de commentaire
     var showComments by remember { mutableStateOf(false) } // État local pour gérer la visibilité des commentaires
+    val context = LocalContext.current
+
 
     Surface(
         modifier = modifier.padding(8.dp),
@@ -166,8 +172,8 @@ fun PostView(
                             comment.addResponse(newResponse)
                         },
                         onDelete = { commentToDelete ->
-                            commentToDelete.isDeleted = true
-                            updateCounter.value++  // Ceci force la recomposition via l'incrémentation
+                            post.comments.remove(commentToDelete)
+                            Toast.makeText(context, "Commentaire supprimé", Toast.LENGTH_SHORT).show()
                         },
                         updateCounter = updateCounter,  // Assurez-vous de passer updateCounter ici
                         modifier = Modifier.padding(start = 16.dp)
@@ -186,84 +192,75 @@ fun CommentView(
     onLike: () -> Unit,
     onRespond: (String) -> Unit,
     onDelete: (Comment) -> Unit,
-    updateCounter: MutableState<Int>,
+    updateCounter: MutableState<Int>, // Utilisé pour forcer la recomposition
     modifier: Modifier = Modifier
 ) {
-
     var responseText by remember { mutableStateOf("") }
     var isReplying by remember { mutableStateOf(false) }
-    var showResponses by remember { mutableStateOf(false) } // Pour gérer l'affichage des réponses
+    val showResponses = remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier = modifier.padding(8.dp),
         color = if (!comment.isDeleted) Color.LightGray else Color(0xFFE0E0E0),
         shape = RoundedCornerShape(4.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
+            Text(text = if (!comment.isDeleted) comment.content else "Ce commentaire a été supprimé")
             if (!comment.isDeleted) {
-                Text(text = comment.content)
-                Text(text = "Likes: ${comment.likes}")
+                Text(text = "${comment.likes} likes")
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { onLike() }) { LikeIcon() }
+                    IconButton(onClick = onLike) { LikeIcon() }
                     Spacer(modifier = Modifier.width(8.dp))
                     IconButton(onClick = { isReplying = !isReplying }) { ResponseIcon() }
                     Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(onClick = { onDelete(comment) }) { DeleteIcon() }
+                    IconButton(onClick = { onDelete(comment); updateCounter.value++ }) { DeleteIcon() }
                 }
                 if (isReplying) {
                     OutlinedTextField(
                         value = responseText,
                         onValueChange = { responseText = it },
                         label = { Text("Add a response") },
-                        singleLine = true,
                         trailingIcon = {
-                            if (responseText.isNotBlank()) {
-                                IconButton(onClick = {
+                            IconButton(onClick = {
+                                if (responseText.isNotBlank()) {
                                     onRespond(responseText)
                                     responseText = ""
                                     isReplying = false
-                                }) {
-                                    SendIcon()
+                                    updateCounter.value++ // Incrément pour forcer la recomposition après l'ajout d'une réponse
                                 }
-                            }
+                            }) { SendIcon() }
                         },
+                        singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-            } else {
-                Text("Ce commentaire a été supprimé")
             }
 
+            // Gérer l'affichage des réponses
             if (comment.responses.isNotEmpty()) {
                 Text(
-                    text = if (showResponses) "Hide Responses (${comment.responses.size})" else "Show Responses (${comment.responses.size})",
-                    modifier = Modifier.clickable { showResponses = !showResponses }.padding(vertical = 4.dp),
+                    text = if (showResponses.value) "Hide Responses (${comment.responses.size})" else "Show Responses (${comment.responses.size})",
+                    modifier = Modifier.clickable { showResponses.value = !showResponses.value }.padding(vertical = 4.dp),
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-            if (showResponses) {
+            if (showResponses.value) {
                 comment.responses.forEach { response ->
                     CommentView(
                         comment = response,
-                        onLike = { response.addLike() },
+                        onLike = { response.addLike(); updateCounter.value++ }, // Incrément pour forcer la recomposition après un like
                         onRespond = { newText ->
-                            val newResponse = Comment(
-                                id = UUID.randomUUID().toString(),
-                                postId = comment.postId,
-                                content = newText,
-                                isDeleted = false,
-                                initialLikes = 0
-                            )
+                            val newResponse = Comment(id = UUID.randomUUID().toString(), postId = comment.postId, content = newText, isDeleted = false)
                             response.addResponse(newResponse)
+                            updateCounter.value++ // Incrément pour forcer la recomposition après l'ajout d'une nouvelle réponse
                         },
-                        onDelete = { commentToDelete ->
-                            commentToDelete.isDeleted = true
-                            updateCounter.value++
+                        onDelete = { responseToDelete ->
+                            comment.responses.remove(responseToDelete)
+                            Toast.makeText(context, "Réponse supprimé", Toast.LENGTH_SHORT).show()
                         },
-                        updateCounter = updateCounter,
-                        modifier = Modifier.padding(start = 16.dp) // Décalage pour montrer l'imbrication
+                        updateCounter = updateCounter, // Passez cet état à travers pour continuer à forcer la recomposition
+                        modifier = Modifier.padding(start = 16.dp)
                     )
                 }
             }
@@ -276,23 +273,24 @@ fun CommentView(
 @Composable
 fun DefaultPreview() {
     RSSpeedrunTheme {
+        // Déclaration d'un updateCounter fictif pour l'aperçu
         val updateCounter = remember { mutableStateOf(0) }
 
-        PostList(
-            posts = mutableListOf(
-                Post(
-                    id = "1",
-                    content = "Hello Compose",
-                    comments = mutableListOf(
-                        Comment(
-                            id = "comment1",
-                            postId = "1",
-                            content = "This is a test comment"
-                        )
+        // Utilisation de mutableStateListOf() pour créer une liste compatible avec SnapshotStateList
+        val posts = remember { mutableStateListOf(
+            Post(
+                id = "1",
+                content = "Hello Compose",
+                comments = mutableStateListOf(
+                    Comment(
+                        id = "comment1",
+                        postId = "1",
+                        content = "This is a test comment"
                     )
                 )
-            ),
-            updateCounter = updateCounter
-        )
+            )
+        )}
+
+        PostList(posts = posts, updateCounter = updateCounter)
     }
 }
