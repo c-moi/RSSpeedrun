@@ -87,5 +87,7 @@ dependencies {
 
     implementation ("io.coil-kt:coil-compose:2.5.0")
     implementation ("androidx.compose.runtime:runtime:1.6.4")
+    implementation ("io.coil-kt:coil-compose:2.1.0") // Vérifiez la dernière version disponible
+    implementation ("androidx.activity:activity-ktx:1.4.0")
 
 }

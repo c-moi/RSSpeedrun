@@ -3,4 +3,5 @@
     <string name="title_activity_profil_utilisateur">UserProfileActivity</string>
     <string name="title_activity_edit_profile_user">EditProfileUserActivity</string>
 
+    <string name="title_activity_edit_profile_user">Modifier le profil</string>
 </resources>
