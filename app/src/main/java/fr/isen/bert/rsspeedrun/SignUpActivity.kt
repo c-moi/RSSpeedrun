@@ -2,6 +2,7 @@ package fr.isen.bert.rsspeedrun
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -53,6 +54,12 @@ class SignUpActivity : AppCompatActivity() {
 
             }
 
+        }
+
+        val textView = findViewById<TextView>(R.id.textView)
+        textView.setOnClickListener {
+            val intent = Intent(this, SignInActivity::class.java)
+            startActivity(intent)
         }
     }
 }
