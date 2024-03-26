@@ -8,6 +8,7 @@ data class Comment(
     val id: String,
     val postId: String,
     val content: String,
+    var isDeleted: Boolean = false,
     val initialLikes: Int = 0,
     val responses: MutableList<Comment> = mutableListOf()
 ) {

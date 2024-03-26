@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,16 +12,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Send
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,7 +34,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
 import java.util.*
 
 class MainActivity : ComponentActivity() {
@@ -45,23 +41,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RSSpeedrunTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    val updateCounter = remember { mutableStateOf(0) }
                     val posts = remember { mutableStateListOf<Post>() }
-                    // Ajoutez des données de test ici si nécessaire
                     if (posts.isEmpty()) {
                         posts.add(Post(id = "1", content = "Ceci est un post de test"))
                     }
-
-                    PostList(posts)
+                    // Passez updateCounter comme paramètre à PostList
+                    PostList(posts, updateCounter)
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun LikeIcon() {
@@ -84,16 +77,18 @@ fun ResponseIcon() {
 }
 
 @Composable
-fun PostList(posts: MutableList<Post>, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.padding(16.dp)) {
+fun DeleteIcon() {
+    Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Response")
+}
+
+@Composable
+fun PostList(posts: List<Post>, updateCounter: MutableState<Int>) {
+    Column(modifier = Modifier.padding(16.dp)) {
         posts.forEach { post ->
-            PostView(
-                post = post,
-                onLike = { post.likes++ }, // Cette ligne modifie l'état observé
+            PostView(post, onLike = { post.likes++ },
                 onCommentAdded = { commentText ->
                     post.comments.add(Comment(id = UUID.randomUUID().toString(), postId = post.id, content = commentText))
-                }
-            )
+                }, updateCounter)
         }
     }
 }
@@ -103,6 +98,7 @@ fun PostView(
     post: Post,
     onLike: () -> Unit,
     onCommentAdded: (String) -> Unit,
+    updateCounter: MutableState<Int>,
     modifier: Modifier = Modifier
 ) {
     // Utiliser un état local pour gérer le texte du commentaire
@@ -163,12 +159,18 @@ fun PostView(
                         onRespond = { responseText ->
                             val newResponse = Comment(
                                 id = UUID.randomUUID().toString(),
-                                postId = post.id,
-                                content = responseText
+                                postId = comment.postId,
+                                content = responseText,
+                                isDeleted = false
                             )
                             comment.addResponse(newResponse)
                         },
-                        modifier = Modifier.padding(start = 16.dp) // Ajoute une marge à gauche pour les commentaires imbriqués
+                        onDelete = { commentToDelete ->
+                            commentToDelete.isDeleted = true
+                            updateCounter.value++  // Ceci force la recomposition via l'incrémentation
+                        },
+                        updateCounter = updateCounter,  // Assurez-vous de passer updateCounter ici
+                        modifier = Modifier.padding(start = 16.dp)
                     )
                 }
             }
@@ -183,71 +185,85 @@ fun CommentView(
     comment: Comment,
     onLike: () -> Unit,
     onRespond: (String) -> Unit,
+    onDelete: (Comment) -> Unit,
+    updateCounter: MutableState<Int>,
     modifier: Modifier = Modifier
 ) {
+
     var responseText by remember { mutableStateOf("") }
-    var isReplying by remember { mutableStateOf(false) } // État local pour gérer la visibilité du champ de réponse
-    var showResponses by remember { mutableStateOf(false) } // État local pour gérer la visibilité des réponses du commentaire
+    var isReplying by remember { mutableStateOf(false) }
+    var showResponses by remember { mutableStateOf(false) } // Pour gérer l'affichage des réponses
 
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
-        color = Color.LightGray,
+        color = if (!comment.isDeleted) Color.LightGray else Color(0xFFE0E0E0),
         shape = RoundedCornerShape(4.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text(text = comment.content)
-            Text(text = "Likes: ${comment.likes}")
-            Row(modifier = Modifier.padding(top = 8.dp)) {
-                IconButton(onClick = { onLike() }) {
-                    LikeIcon()
+            if (!comment.isDeleted) {
+                Text(text = comment.content)
+                Text(text = "Likes: ${comment.likes}")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { onLike() }) { LikeIcon() }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(onClick = { isReplying = !isReplying }) { ResponseIcon() }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(onClick = { onDelete(comment) }) { DeleteIcon() }
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                IconButton(onClick = { isReplying = !isReplying }) {
-                    ResponseIcon()
-                }
-            }
-            if (isReplying) { // Affiche le champ de réponse uniquement lorsque isReplying est vrai
-                Box {
+                if (isReplying) {
                     OutlinedTextField(
                         value = responseText,
                         onValueChange = { responseText = it },
                         label = { Text("Add a response") },
+                        singleLine = true,
+                        trailingIcon = {
+                            if (responseText.isNotBlank()) {
+                                IconButton(onClick = {
+                                    onRespond(responseText)
+                                    responseText = ""
+                                    isReplying = false
+                                }) {
+                                    SendIcon()
+                                }
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth()
                     )
-                    if (responseText.isNotBlank()) {
-                        IconButton(
-                            onClick = {
-                                onRespond(responseText)
-                                responseText = ""
-                            },
-                            modifier = Modifier.align(Alignment.CenterEnd).padding(end = 8.dp)
-                        ) {
-                            SendIcon()
-                        }
-                    }
                 }
+            } else {
+                Text("Ce commentaire a été supprimé")
             }
+
             if (comment.responses.isNotEmpty()) {
                 Text(
                     text = if (showResponses) "Hide Responses (${comment.responses.size})" else "Show Responses (${comment.responses.size})",
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable { showResponses = !showResponses }
+                    modifier = Modifier.clickable { showResponses = !showResponses }.padding(vertical = 4.dp),
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
             if (showResponses) {
                 comment.responses.forEach { response ->
-                    // Affichage récursif des réponses comme des commentaires
                     CommentView(
                         comment = response,
                         onLike = { response.addLike() },
-                        onRespond = { newResponseText ->
+                        onRespond = { newText ->
                             val newResponse = Comment(
-                                id = UUID.randomUUID().toString(), postId = comment.postId, content = newResponseText)
+                                id = UUID.randomUUID().toString(),
+                                postId = comment.postId,
+                                content = newText,
+                                isDeleted = false,
+                                initialLikes = 0
+                            )
                             response.addResponse(newResponse)
                         },
-                        modifier = Modifier.padding(start = 16.dp) // Ajoute une marge à gauche pour les commentaires imbriqués
+                        onDelete = { commentToDelete ->
+                            commentToDelete.isDeleted = true
+                            updateCounter.value++
+                        },
+                        updateCounter = updateCounter,
+                        modifier = Modifier.padding(start = 16.dp) // Décalage pour montrer l'imbrication
                     )
                 }
             }
@@ -256,15 +272,27 @@ fun CommentView(
 }
 
 
-
-
-
-
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     RSSpeedrunTheme {
-        PostList(mutableListOf(Post("1", "Hello Compose")))
+        val updateCounter = remember { mutableStateOf(0) }
+
+        PostList(
+            posts = mutableListOf(
+                Post(
+                    id = "1",
+                    content = "Hello Compose",
+                    comments = mutableListOf(
+                        Comment(
+                            id = "comment1",
+                            postId = "1",
+                            content = "This is a test comment"
+                        )
+                    )
+                )
+            ),
+            updateCounter = updateCounter
+        )
     }
 }
