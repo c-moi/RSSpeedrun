@@ -35,6 +35,7 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Theme.RSSpeedrun" parent="android:Theme.Material.Light" />
     <style name="Theme.RSSpeedrun" parent="android:Theme.Material.Light.NoActionBar" />
 
     <style name="LoginTextInputOuterFieldStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">

@@ -4,13 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import fr.isen.bert.rsspeedrun.UserProfileActivity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
@@ -43,10 +41,17 @@ class MainActivity : ComponentActivity() {
             val chgUser = ManageUser()
             val post = ManagePost()
             RSSpeedrunTheme {
+                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    // Call the goToProfile function to navigate to UserProfileActivity
+                    goToProfile()
+                }
+            }
+        }
+    }
                     goToProfile()
                     /*if (currentUser != null) {
                         // rediriger vers une activité de l'appli
@@ -153,6 +158,9 @@ class MainActivity : ComponentActivity() {
                                             // Vérifier si selected est true
                                             if (unpost != null && unpost.selected) {
 
+    // Function to navigate to UserProfileActivity
+    private fun goToProfile() {
+        val intent = Intent(this, UserProfileActivity::class.java)
                                                 post.modifPost(postId, Post(
                                                     postId,"helloNEW","",
                                                     "c'est gregours","newDate",
@@ -189,28 +197,5 @@ class MainActivity : ComponentActivity() {
     private fun goToProfile() {
         val intent = Intent(this@MainActivity, ProfilUtilisateurActivity::class.java)
         startActivity(intent)
-    }
-
-    // Function to handle logout click
-    private fun handleLogout() {
-        // Replace this with your actual implementation to logout the user
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Button(
-        onClick = { /* Do something */ },
-        modifier = modifier
-    ) {
-        Text("Hello $name!")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RSSpeedrunTheme {
-        Greeting("Android")
     }
 }
