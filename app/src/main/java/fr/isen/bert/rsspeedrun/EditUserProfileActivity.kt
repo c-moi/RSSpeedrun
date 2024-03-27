@@ -2,114 +2,100 @@ package fr.isen.bert.rsspeedrun
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
-data class UserProfile(
-    val username: String,
-    val pseudo: String,
-    val description: String,
-    val imageUri: String
-)
-
 class EditUserProfileActivity : ComponentActivity() {
-    private var username by mutableStateOf("")
-    private var pseudo by mutableStateOf("")
-    private var description by mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Récupère les données envoyées depuis UserProfileActivity
+        val username = intent.getStringExtra("username") ?: ""
+        val pseudo = intent.getStringExtra("pseudo") ?: ""
+        val description = intent.getStringExtra("description") ?: ""
+        val dateOfBirth = intent.getStringExtra("date_of_birth") ?: ""
+
         setContent {
+            // Utilise le thème RSSpeedrun
             RSSpeedrunTheme {
-                EditUserProfileContent(
-                    username = username,
-                    pseudo = pseudo,
-                    description = description,
-                    onUsernameChange = { username = it },
-                    onPseudoChange = { pseudo = it },
-                    onDescriptionChange = { description = it },
-                    onSaveChanges = { saveChanges() }
-                )
+                // Affiche le contenu de l'activité
+                EditUserProfileContent(username, pseudo, description, dateOfBirth)
             }
         }
     }
 
-    private fun saveChanges() {
-        // Save changes logic
-        val userProfile = UserProfile(username, pseudo, description, "")
+    // Fonction pour sauvegarder les modifications et retourner à l'activité précédente
+    private fun saveChanges(username: String, pseudo: String, description: String, dateOfBirth: String) {
         val resultIntent = Intent().apply {
             putExtra("username", username)
             putExtra("pseudo", pseudo)
             putExtra("description", description)
+            putExtra("date_of_birth", dateOfBirth)
         }
-        setResult(Activity.RESULT_OK, resultIntent)
+        setResult(RESULT_OK, resultIntent)
         finish()
     }
 
+    // Fonction pour afficher le contenu de l'activité
     @Composable
-    fun EditUserProfileContent(
-        username: String,
-        pseudo: String,
-        description: String,
-        onUsernameChange: (String) -> Unit,
-        onPseudoChange: (String) -> Unit,
-        onDescriptionChange: (String) -> Unit,
-        onSaveChanges: () -> Unit
-    ) {
+    fun EditUserProfileContent(username: String, pseudo: String, description: String, dateOfBirth: String) {
+        // Utilise un état mutable pour stocker les valeurs modifiées
+        val newUsername = remember { mutableStateOf(username) }
+        val newPseudo = remember { mutableStateOf(pseudo) }
+        val newDescription = remember { mutableStateOf(description) }
+        val newDateOfBirth = remember { mutableStateOf(dateOfBirth) }
+
+        // Affiche les champs de texte et le bouton pour sauvegarder les modifications
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(16.dp)
         ) {
-            Text(text = "Edit User Profile", style = MaterialTheme.typography.headlineSmall)
-            // Username TextField
-            OutlinedTextField(
-                value = username,
-                onValueChange = onUsernameChange,
-                label = { Text("Username") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                singleLine = true
+            // Titre de la page
+            // Champ de texte pour le nom d'utilisateur
+            TextField(
+                value = newUsername.value,
+                onValueChange = { newUsername.value = it },
+                label = { Text("Username") }
             )
-            // Pseudo TextField
-            OutlinedTextField(
-                value = pseudo,
-                onValueChange = onPseudoChange,
-                label = { Text("Pseudo") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                singleLine = true
+            Spacer(modifier = Modifier.height(16.dp))
+            // Champ de texte pour le pseudo
+            TextField(
+                value = newPseudo.value,
+                onValueChange = { newPseudo.value = it },
+                label = { Text("Pseudo") }
             )
-            // Description TextField
-            OutlinedTextField(
-                value = description,
-                onValueChange = onDescriptionChange,
-                label = { Text("Description") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                singleLine = true
+            Spacer(modifier = Modifier.height(16.dp))
+            // Champ de texte pour la description
+            TextField(
+                value = newDescription.value,
+                onValueChange = { newDescription.value = it },
+                label = { Text("Description") }
             )
-            // Button to Save Changes
-            Button(onClick = onSaveChanges, modifier = Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            // Champ de texte pour la date de naissance
+            TextField(
+                value = newDateOfBirth.value,
+                onValueChange = { newDateOfBirth.value = it },
+                label = { Text("Date of Birth") }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            // Bouton pour sauvegarder les modifications
+            Button(onClick = {
+                saveChanges(newUsername.value, newPseudo.value, newDescription.value, newDateOfBirth.value)
+            }) {
                 Text("Save Changes")
             }
         }
     }
 }
-
