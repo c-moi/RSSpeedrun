@@ -12,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -29,48 +31,35 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Pass the required parameters to UserProfilePage function
-                    UserProfilePageScreen(
-                        user = User(
-                            name = "John Doe",
-                            username = "john_doe",
-                            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                            birthDate = "01/01/1990",
-                            profileImageUrl = "https://example.com/profile.jpg"
-                        ),
-                        onEditProfileClicked = { handleEditProfile() },
-                        onLogoutClicked = { handleLogout() }
-                    )
+                    Greeting("Android")
+                    goToProfile()
                 }
             }
         }
     }
-
-    // Function to navigate to the edit profile activity
-    private fun handleEditProfile() {
-        val intent = Intent(this, EditProfilUtilisateurActivity::class.java)
+    private fun goToProfile() {
+        val intent = Intent(this@MainActivity, ProfilUtilisateurActivity::class.java)
         startActivity(intent)
     }
 
-    // Function to handle logout click
-    private fun handleLogout() {
-        // Replace this with your actual implementation to logout the user
-        Toast.makeText(this, "Logout Clicked", Toast.LENGTH_SHORT).show()
-    }
+
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RSSpeedrunTheme {
-        Greeting("Android")
+
+    @Composable
+    fun Greeting(name: String, modifier: Modifier = Modifier) {
+        Text(
+            text = "Hello $name!",
+            modifier = modifier
+        )
     }
-}
+
+    @Preview(showBackground = true)
+    @Composable
+    fun GreetingPreview() {
+        RSSpeedrunTheme {
+            Greeting("Android")
+        }
+    }
+
