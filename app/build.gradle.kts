@@ -59,7 +59,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,7 +66,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation ("io.coil-kt:coil-compose:2.1.0") // Vérifiez la dernière version disponible
-    implementation ("androidx.activity:activity-ktx:1.4.0")
+    implementation ("io.coil-kt:coil:1.4.0")
+    implementation ("androidx.compose.ui:ui:1.0.5")
+    implementation ("androidx.compose.material3:material3:1.0.0-alpha06")
+    implementation ("androidx.activity:activity-compose:1.4.0")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.0.5")
 
 }

@@ -4,14 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import fr.isen.bert.rsspeedrun.UserProfileActivity
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,53 +16,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RSSpeedrunTheme {
+                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Pass the required parameters to UserProfilePage function
-                    UserProfilePageScreen(
-                        user = User(
-                            name = "John Doe",
-                            username = "john_doe",
-                            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                            birthDate = "01/01/1990",
-                            profileImageUrl = "https://example.com/profile.jpg"
-                        ),
-                        onEditProfileClicked = { handleEditProfile() },
-                        onLogoutClicked = { handleLogout() }
-                    )
+                    // Call the goToProfile function to navigate to UserProfileActivity
+                    goToProfile()
                 }
             }
         }
     }
 
-    // Function to navigate to the edit profile activity
-    private fun handleEditProfile() {
-        val intent = Intent(this, EditProfilUtilisateurActivity::class.java)
+    // Function to navigate to UserProfileActivity
+    private fun goToProfile() {
+        val intent = Intent(this, UserProfileActivity::class.java)
         startActivity(intent)
-    }
-
-    // Function to handle logout click
-    private fun handleLogout() {
-        // Replace this with your actual implementation to logout the user
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Button(
-        onClick = { /* Do something */ },
-        modifier = modifier
-    ) {
-        Text("Hello $name!")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RSSpeedrunTheme {
-        Greeting("Android")
     }
 }
