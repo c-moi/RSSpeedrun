@@ -1,7 +1,6 @@
 package fr.isen.bert.rsspeedrun
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,28 +8,28 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
@@ -41,6 +40,7 @@ class UserProfileActivity : ComponentActivity() {
     private val pseudo: MutableState<String> = mutableStateOf("clement83c")
     private val description: MutableState<String> = mutableStateOf("Etudiant ISEN")
     private val dateOfBirth: MutableState<String> = mutableStateOf("17/02/2000")
+    private val profileImageUri: MutableState<String> = mutableStateOf("") // Added profile image URI
 
     private val editProfileLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -50,24 +50,69 @@ class UserProfileActivity : ComponentActivity() {
                     pseudo.value = data.getStringExtra("pseudo") ?: pseudo.value
                     description.value = data.getStringExtra("description") ?: description.value
                     dateOfBirth.value = data.getStringExtra("date_of_birth") ?: dateOfBirth.value
+                    profileImageUri.value = data.getStringExtra("profile_image_uri") ?: profileImageUri.value // Update profile image URI
                 }
             }
         }
+
+    val numberOfPosts = 5
+    val numberOfLikes = 10
+    val posts = listOf(
+        "Post 1: Contenu du post 1",
+        "Post 2: Contenu du post 2",
+        "Post 3: Contenu du post 3",
+        "Post 4: Contenu du post 4",
+        "Post 5: Contenu du post 5"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             RSSpeedrunTheme {
-                UserProfileContent(
-                    username.value,
-                    pseudo.value,
-                    description.value,
-                    dateOfBirth.value,
-                    onSettingsClick = { navigateToEditProfile() },
-                    onLogoutClick = { performLogout() }
-                )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color(0xFF344347) // Use the background_grey color
+                ) {
+                    UserProfileContent(
+                        username = username.value,
+                        pseudo = pseudo.value,
+                        description = description.value,
+                        dateOfBirth = dateOfBirth.value,
+                        profileImageUri = profileImageUri.value,
+                        numberOfPosts = numberOfPosts,
+                        numberOfLikes = numberOfLikes,
+                        posts = posts,
+                        onSettingsClick = { navigateToEditProfile() },
+                        onLogoutClick = { performLogout() }
+                    )
+                }
             }
+        }
+    }
+
+    private fun performLogout() {
+        TODO("Not yet implemented")
+    }
+
+    @Composable
+    fun ProfilePicture() {
+        Box(
+            modifier = Modifier
+                .size(120.dp) // Size of the profile picture
+                .padding(8.dp) // Space from the edges of the box
+                .clip(CircleShape) // Clip the image to a circle shape
+                .background(Color(0xFF6FCB9A)) // Green circle background color
+                .clickable { /* Handle click action */ },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.profilutilisateur),
+                contentDescription = "Profile picture",
+                modifier = Modifier
+                    .size(100.dp) // Slightly smaller size to create a border effect
+                    .clip(CircleShape)
+            )
         }
     }
 
@@ -77,6 +122,7 @@ class UserProfileActivity : ComponentActivity() {
             putExtra("pseudo", pseudo.value)
             putExtra("description", description.value)
             putExtra("date_of_birth", dateOfBirth.value)
+            putExtra("profile_image_uri", profileImageUri.value) // Pass profile image URI
         }
         editProfileLauncher.launch(intent)
     }
@@ -87,6 +133,10 @@ class UserProfileActivity : ComponentActivity() {
         pseudo: String,
         description: String,
         dateOfBirth: String,
+        profileImageUri: String,
+        numberOfPosts: Int,
+        numberOfLikes: Int,
+        posts: List<String>, // Liste des posts
         onSettingsClick: () -> Unit,
         onLogoutClick: () -> Unit
     ) {
@@ -95,131 +145,134 @@ class UserProfileActivity : ComponentActivity() {
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            ProfilePicture() // Display the profile picture at the top left
             Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                IconButton(onClick = onSettingsClick) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Settings",
-                        tint = Color.Black
-                    )
-                }
-                IconButton(onClick = onLogoutClick) {
-                    Icon(
-                        imageVector = Icons.Default.ExitToApp,
-                        contentDescription = "Logout",
-                        tint = Color.Black
-                    )
-                }
-            }
-
-            Card(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
-                    .background(color = Color.LightGray)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
+                IconButtonWithBackground(
+                    icon = Icons.Default.Settings,
+                    contentDescription = "Settings",
+                    onIconClick = onSettingsClick
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Space between buttons
+                IconButtonWithBackground(
+                    icon = Icons.Default.ExitToApp,
+                    contentDescription = "Logout",
+                    onIconClick = onLogoutClick
+                )
+            }
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Profile",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    color = Color.White // Use the white color for text
+                )
+                ProfileItem(label = "Username:", value = username)
+                Divider(color = Color(0xFF6FCB9A), thickness = 1.dp) // Green divider
+                ProfileItem(label = "Pseudo:", value = pseudo)
+                Divider(color = Color(0xFF6FCB9A), thickness = 1.dp) // Green divider
+                ProfileItem(label = "Description:", value = description)
+                Divider(color = Color(0xFF6FCB9A), thickness = 1.dp) // Green divider
+                ProfileItem(label = "Date of Birth:", value = dateOfBirth)
+
+                // Affichage du nombre de publications
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Profile",
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.padding(bottom = 8.dp),
-                        color = Color.Black
+                        text = "Nombre de publications: $numberOfPosts",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color.White
                     )
-                    ProfileItem(label = "Username:", value = username)
-                    ProfileItem(label = "Pseudo:", value = pseudo)
-                    ProfileItem(label = "Description:", value = description)
-                    ProfileItem(label = "Date of Birth:", value = dateOfBirth)
+                }
+
+                // Affichage du nombre de likes
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Nombre de likes: $numberOfLikes",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color.White
+                    )
+                }
+
+                // Affichage des posts
+                posts.forEach { post ->
+                    GreenRectangle(text = post)
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
+        }
+    }
 
-            Text(
-                text = "Posts",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(vertical = 16.dp),
-                color = Color.Black
+    @Composable
+    fun IconButtonWithBackground(
+        icon: ImageVector,
+        contentDescription: String,
+        onIconClick: () -> Unit,
+        backgroundColor: Color = Color(0xFF6FCB9A), // Green background
+        iconTint: Color = Color(0xFF9DADAC) // Grey icon
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .background(backgroundColor, shape = CircleShape)
+                .padding(8.dp)
+                .size(48.dp)
+                .clickable(onClick = onIconClick)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = iconTint
             )
-
-            for (i in 1..6) {
-                PostItem(index = i)
-            }
         }
     }
 
     @Composable
     fun ProfileItem(label: String, value: String) {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Column(modifier = Modifier.padding(vertical = 8.dp)) {
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier.width(120.dp),
-                color = Color.Black
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color(0xFF6FCB9A) // Green color for the label
             )
             Text(
                 text = value,
-                style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier.padding(start = 8.dp),
-                color = Color.Black
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color(0xFF6FCB9A) // Green color for the value
             )
-        }
-    }
-
-    // Fonction utilitaire pour obtenir l'ID de la ressource drawable en fonction de l'index
-    fun getDrawableResourceId(index: Int): Int {
-        // Ici, vous pouvez implémenter la logique pour obtenir l'ID de la ressource en fonction de l'index
-        // Par exemple, vous pouvez stocker les noms des images dans un tableau et accéder à l'élément correspondant à l'index
-        // puis convertir le nom de l'image en identifiant de ressource.
-        // Pour cet exemple, je vais simplement renvoyer une ressource par défaut.
-        return when (index % 3) {
-            0 -> R.drawable.post1
-            1 -> R.drawable.post2
-            else -> R.drawable.post3
         }
     }
 
     @Composable
-    fun PostItem(index: Int) {
-        // Charge l'image à partir des ressources
-        val image = painterResource(id = getDrawableResourceId(index))
-
-        Card(
+    fun GreenRectangle(text: String) {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(horizontal = 16.dp)
+                .height(100.dp) // Hauteur du rectangle
+                .background(Color.Gray, shape = MaterialTheme.shapes.medium)
+                .border(2.dp, Color.Green, shape = MaterialTheme.shapes.medium)
         ) {
-            Column(
+            Text(
+                text = text,
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.White,
                 modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = "Post $index",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color.Black
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                // Affiche l'image
-                Image(
-                    painter = image,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Description of post $index",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.Black
-                )
-            }
+            )
         }
     }
-
-
-    private fun performLogout() {
-        finish()
-    }
 }
-
