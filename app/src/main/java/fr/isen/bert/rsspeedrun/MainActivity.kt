@@ -38,6 +38,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import fr.isen.bert.rsspeedrun.ui.theme.customgreen
 import java.util.*
 
 class MainActivity : ComponentActivity() {
@@ -45,44 +46,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RSSpeedrunTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFF242424)) {
                     val updateCounter = remember { mutableStateOf(0) }
                     val posts = remember { mutableStateListOf<Post>() }
                     if (posts.isEmpty()) {
                         posts.add(Post(id = "1", content = "Ceci est un post de test"))
                     }
-                    // Passez updateCounter comme paramètre à PostList
                     PostList(posts, updateCounter)
                 }
             }
         }
     }
-}
-
-
-@Composable
-fun LikeIcon() {
-    Icon(imageVector = Icons.Filled.Favorite, contentDescription = "Like")
-}
-
-@Composable
-fun CommentIcon() {
-    Icon(imageVector = Icons.Filled.Add, contentDescription = "Comment")
-}
-
-@Composable
-fun SendIcon() {
-    Icon(imageVector = Icons.Outlined.Send, contentDescription = "Send")
-}
-
-@Composable
-fun ResponseIcon() {
-    Icon(imageVector = Icons.Outlined.ArrowForward, contentDescription = "Response")
-}
-
-@Composable
-fun DeleteIcon() {
-    Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Response")
 }
 
 @Composable
@@ -105,21 +79,21 @@ fun PostView(
     updateCounter: MutableState<Int>,
     modifier: Modifier = Modifier
 ) {
-    // Utiliser un état local pour gérer le texte du commentaire
     var commentText by remember { mutableStateOf("") }
-    var isCommenting by remember { mutableStateOf(false) } // État local pour gérer la visibilité du champ de commentaire
-    var showComments by remember { mutableStateOf(false) } // État local pour gérer la visibilité des commentaires
+    var isCommenting by remember { mutableStateOf(false) }
+    var showComments by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
 
     Surface(
         modifier = modifier.padding(8.dp),
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, Color.Black) // Ajoute un contour rectangulaire autour du post de base
+        color = Color(0xFF344347),
+        border = BorderStroke(1.dp, Color(0xFF6FCB9A))
     ) {
         Column(modifier = modifier.padding(16.dp)) {
-            Text(text = post.content)
-            Text(text = "Likes: ${post.likes}")
+            Text(text = post.content, color = Color.White)
+            Text(text = "Likes: ${post.likes}", color = Color.White)
             Row(modifier = modifier.padding(top = 8.dp)) {
                 IconButton(onClick = { onLike() }) {
                     LikeIcon()
@@ -129,12 +103,12 @@ fun PostView(
                     CommentIcon()
                 }
             }
-            if (isCommenting) { // Affiche le champ de commentaire uniquement lorsque isCommenting est vrai
+            if (isCommenting) {
                 Box {
                     OutlinedTextField(
                         value = commentText,
                         onValueChange = { commentText = it },
-                        label = { Text("Add a comment") },
+                        label = { Text("Ajouter un commentaire", color = Color.White) },
                         modifier = Modifier.fillMaxWidth()
                     )
                     if (commentText.isNotBlank()) {
@@ -152,8 +126,8 @@ fun PostView(
             }
             if (post.comments.isNotEmpty()) {
                 Text(
-                    text = if (showComments) "Hide Responses (${post.comments.size})" else "Show Responses (${post.comments.size})",
-                    color = MaterialTheme.colorScheme.primary,
+                    text = if (showComments) "Cacher réponses (${post.comments.size})" else "Voir réponses (${post.comments.size})",
+                    color = customgreen,
                     modifier = Modifier.clickable { showComments = !showComments }
                 )
             }
@@ -175,7 +149,7 @@ fun PostView(
                             post.comments.remove(commentToDelete)
                             Toast.makeText(context, "Commentaire supprimé", Toast.LENGTH_SHORT).show()
                         },
-                        updateCounter = updateCounter,  // Assurez-vous de passer updateCounter ici
+                        updateCounter = updateCounter,
                         modifier = Modifier.padding(start = 16.dp)
                     )
                 }
@@ -192,7 +166,7 @@ fun CommentView(
     onLike: () -> Unit,
     onRespond: (String) -> Unit,
     onDelete: (Comment) -> Unit,
-    updateCounter: MutableState<Int>, // Utilisé pour forcer la recomposition
+    updateCounter: MutableState<Int>,
     modifier: Modifier = Modifier
 ) {
     var responseText by remember { mutableStateOf("") }
@@ -202,13 +176,14 @@ fun CommentView(
 
     Surface(
         modifier = modifier.padding(8.dp),
-        color = if (!comment.isDeleted) Color.LightGray else Color(0xFFE0E0E0),
-        shape = RoundedCornerShape(4.dp)
+        color = Color(0xFF344347),
+        shape = RoundedCornerShape(4.dp),
+        border = BorderStroke(1.dp, Color(0xFF6FCB9A))
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text(text = if (!comment.isDeleted) comment.content else "Ce commentaire a été supprimé")
+            Text(text = if (!comment.isDeleted) comment.content else "Ce commentaire a été supprimé", color = Color.White)
             if (!comment.isDeleted) {
-                Text(text = "${comment.likes} likes")
+                Text(text = "${comment.likes} likes", color = Color.White)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onLike) { LikeIcon() }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -220,14 +195,14 @@ fun CommentView(
                     OutlinedTextField(
                         value = responseText,
                         onValueChange = { responseText = it },
-                        label = { Text("Add a response") },
+                        label = { Text("Ajouter une réponse", color = Color.White) },
                         trailingIcon = {
                             IconButton(onClick = {
                                 if (responseText.isNotBlank()) {
                                     onRespond(responseText)
                                     responseText = ""
                                     isReplying = false
-                                    updateCounter.value++ // Incrément pour forcer la recomposition après l'ajout d'une réponse
+                                    updateCounter.value++
                                 }
                             }) { SendIcon() }
                         },
@@ -237,29 +212,29 @@ fun CommentView(
                 }
             }
 
-            // Gérer l'affichage des réponses
+
             if (comment.responses.isNotEmpty()) {
                 Text(
-                    text = if (showResponses.value) "Hide Responses (${comment.responses.size})" else "Show Responses (${comment.responses.size})",
+                    text = if (showResponses.value) "Cacher réponses (${comment.responses.size})" else "Voir réponses (${comment.responses.size})",
                     modifier = Modifier.clickable { showResponses.value = !showResponses.value }.padding(vertical = 4.dp),
-                    color = MaterialTheme.colorScheme.primary
+                    color = customgreen
                 )
             }
             if (showResponses.value) {
                 comment.responses.forEach { response ->
                     CommentView(
                         comment = response,
-                        onLike = { response.addLike(); updateCounter.value++ }, // Incrément pour forcer la recomposition après un like
+                        onLike = { response.addLike(); updateCounter.value++ },
                         onRespond = { newText ->
                             val newResponse = Comment(id = UUID.randomUUID().toString(), postId = comment.postId, content = newText, isDeleted = false)
                             response.addResponse(newResponse)
-                            updateCounter.value++ // Incrément pour forcer la recomposition après l'ajout d'une nouvelle réponse
+                            updateCounter.value++
                         },
                         onDelete = { responseToDelete ->
                             comment.responses.remove(responseToDelete)
                             Toast.makeText(context, "Réponse supprimé", Toast.LENGTH_SHORT).show()
                         },
-                        updateCounter = updateCounter, // Passez cet état à travers pour continuer à forcer la recomposition
+                        updateCounter = updateCounter,
                         modifier = Modifier.padding(start = 16.dp)
                     )
                 }
@@ -273,10 +248,8 @@ fun CommentView(
 @Composable
 fun DefaultPreview() {
     RSSpeedrunTheme {
-        // Déclaration d'un updateCounter fictif pour l'aperçu
         val updateCounter = remember { mutableStateOf(0) }
 
-        // Utilisation de mutableStateListOf() pour créer une liste compatible avec SnapshotStateList
         val posts = remember { mutableStateListOf(
             Post(
                 id = "1",
@@ -294,3 +267,18 @@ fun DefaultPreview() {
         PostList(posts = posts, updateCounter = updateCounter)
     }
 }
+
+@Composable
+fun LikeIcon() { Icon(imageVector = Icons.Filled.Favorite, contentDescription = "Like", tint = Color.Red) }
+
+@Composable
+fun CommentIcon() { Icon(imageVector = Icons.Filled.Add, contentDescription = "Comment", tint = Color.White) }
+
+@Composable
+fun SendIcon() { Icon(imageVector = Icons.Outlined.Send, contentDescription = "Send", tint = Color.White) }
+
+@Composable
+fun ResponseIcon() { Icon(imageVector = Icons.Outlined.ArrowForward, contentDescription = "Response", tint = Color.White) }
+
+@Composable
+fun DeleteIcon() { Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Response", tint = Color.White) }
