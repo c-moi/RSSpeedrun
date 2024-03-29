@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -61,16 +63,18 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PostList(posts: List<Post>, updateCounter: MutableState<Int>) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        posts.forEach { post ->
-            PostView(post, onLike = { post.likes++ },
-                onCommentAdded = { commentText ->
-                    post.comments.add(Comment(id = UUID.randomUUID().toString(), postId = post.id, content = commentText))
-                }, updateCounter)
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        items(posts) { post ->
+            PostView(post = post, onLike = {
+                post.addLike()
+                updateCounter.value++
+            }, onCommentAdded = { commentText ->
+                post.addComment(Comment(id = UUID.randomUUID().toString(), postId = post.id, content = commentText))
+                updateCounter.value++
+            }, updateCounter = updateCounter)
         }
     }
 }
-
 @Composable
 fun PostView(
     post: Post,
