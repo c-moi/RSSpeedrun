@@ -142,7 +142,7 @@ class EditPostActivity : ComponentActivity() {
             )
             // Button to Save Changes
             Button(onClick = onSaveChanges, modifier = Modifier.fillMaxWidth()) {
-                Text("Post the post")
+                Text("Post")
             }
         }
     }
