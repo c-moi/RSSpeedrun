@@ -1,5 +1,6 @@
 package fr.isen.bert.rsspeedrun
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -71,10 +72,6 @@ class UserProfileActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private fun navigateToEditProfile() {
-        // Navigation logic to edit profile activity
     }
 
     @Composable
@@ -214,6 +211,12 @@ class UserProfileActivity : ComponentActivity() {
             )
         }
     }
+    private fun navigateToEditProfile() {
+        val intent = Intent(this, EditUserProfileActivity::class.java)
+        startActivity(intent)
+    }
+
+
 
     @Composable
     fun GreenRectangle(text: String) {
