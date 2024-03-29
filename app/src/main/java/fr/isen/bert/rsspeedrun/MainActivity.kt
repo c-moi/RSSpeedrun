@@ -1,6 +1,8 @@
 package fr.isen.bert.rsspeedrun
 
 import android.content.Intent
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,6 +35,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val intent = Intent(this, HomeActivity::class.java)
+
+        // Démarrez l'activité AccueilActivity
+        startActivity(intent)
+
+        // Terminez l'activité MainActivity (si vous ne souhaitez pas y revenir)
+        finish()
         setContent {
             // pour checker si un utilisateur est connecté
             auth = FirebaseAuth.getInstance()
