@@ -7,10 +7,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,8 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -42,12 +42,25 @@ import androidx.compose.ui.text.style.TextAlign
 import fr.isen.bert.rsspeedrun.ui.theme.background
 import fr.isen.bert.rsspeedrun.ui.theme.secondary
 
-data class PC(
-    var Artist : String
+data class Post(
+    val user: String,
+    val game: String,
+    val content: String
 )
+val posts: List<Post> = listOf(
+    Post(user = "Utilisateur1", game = "Jeu1", content = "Contenu1"),
+    Post(user = "Utilisateur2", game = "Jeu2", content = "Contenu2"),
+    // Ajoutez autant d'éléments de post que nécessaire
+)
+
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val posts: List<Post> = listOf(
+            Post(user = "Utilisateur1", game = "Jeu1", content = "Contenu1"),
+            Post(user = "Utilisateur2", game = "Jeu2", content = "Contenu2"),
+            // Ajoutez autant d'éléments de post que nécessaire
+        )
         setContent {
             RSSpeedrunTheme {
                 // A surface container using the 'background' color from the theme
@@ -55,11 +68,8 @@ class HomeActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Header()
-                    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                        val Artist = "Brothers of Metal"
-                        ArtistCardModifiers(Artist)
-                    }
+                    //Header();
+                    ArtistCardsList(Post = posts)
 
                     //Greeting2("zzzzzzz")
 
@@ -168,8 +178,7 @@ fun PostButton() {
 }
 @Composable
 fun ArtistCardModifiers(
-    artist: String,
-    //onClick: () -> Unit
+    artist: Post
 ) {
     val padding = 16.dp
     Column(
@@ -178,14 +187,24 @@ fun ArtistCardModifiers(
             .padding(padding)
             .fillMaxWidth()
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) { /*...*/ }
+        Row(verticalAlignment = Alignment.CenterVertically) {}
         Spacer(Modifier.size(padding))
         Card(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        ) { /*...*/ }
+        ) { BoxWithConstraints {
+            Text("My minHeight is $minHeight while my maxWidth is $maxWidth")
+        } }
     }
 }
 
+@Composable
+fun ArtistCardsList(Post: List<Post>) {
+    LazyColumn {
+        items(Post) { Post ->
+            ArtistCardModifiers(Post)
+        }
+    }
+}
 
 @Composable
 fun Greeting2(name: String, modifier: Modifier = Modifier) {
