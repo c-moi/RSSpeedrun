@@ -17,7 +17,6 @@ data class Post(
         likes++
     }
 
-    // Cette fonction n'est peut-être plus nécessaire si vous manipulez directement la liste 'comments'
     fun addComment(comment: Comment) {
         comments.add(comment)
     }
