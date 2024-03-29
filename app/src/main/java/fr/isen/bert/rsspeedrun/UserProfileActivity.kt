@@ -1,11 +1,8 @@
 package fr.isen.bert.rsspeedrun
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,9 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
 class UserProfileActivity : ComponentActivity() {
@@ -42,19 +38,6 @@ class UserProfileActivity : ComponentActivity() {
     private val dateOfBirth: MutableState<String> = mutableStateOf("17/02/2000")
     private val profileImageUri: MutableState<String> = mutableStateOf("") // Added profile image URI
 
-    private val editProfileLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.let { data ->
-                    username.value = data.getStringExtra("username") ?: username.value
-                    pseudo.value = data.getStringExtra("pseudo") ?: pseudo.value
-                    description.value = data.getStringExtra("description") ?: description.value
-                    dateOfBirth.value = data.getStringExtra("date_of_birth") ?: dateOfBirth.value
-                    profileImageUri.value = data.getStringExtra("profile_image_uri") ?: profileImageUri.value // Update profile image URI
-                }
-            }
-        }
-
     val numberOfPosts = 5
     val numberOfLikes = 10
     val posts = listOf(
@@ -63,7 +46,7 @@ class UserProfileActivity : ComponentActivity() {
         "Post 3: Contenu du post 3",
         "Post 4: Contenu du post 4",
         "Post 5: Contenu du post 5"
-    )
+    ).take(3) // Take only three posts
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +55,7 @@ class UserProfileActivity : ComponentActivity() {
             RSSpeedrunTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color(0xFF344347) // Use the background_grey color
+                    color = Color(0xFF344347) // Background color set to #FF344347
                 ) {
                     UserProfileContent(
                         username = username.value,
@@ -83,16 +66,15 @@ class UserProfileActivity : ComponentActivity() {
                         numberOfPosts = numberOfPosts,
                         numberOfLikes = numberOfLikes,
                         posts = posts,
-                        onSettingsClick = { navigateToEditProfile() },
-                        onLogoutClick = { performLogout() }
+                        onSettingsClick = { navigateToEditProfile() }
                     )
                 }
             }
         }
     }
 
-    private fun performLogout() {
-        TODO("Not yet implemented")
+    private fun navigateToEditProfile() {
+        // Navigation logic to edit profile activity
     }
 
     @Composable
@@ -102,7 +84,7 @@ class UserProfileActivity : ComponentActivity() {
                 .size(120.dp) // Size of the profile picture
                 .padding(8.dp) // Space from the edges of the box
                 .clip(CircleShape) // Clip the image to a circle shape
-                .background(Color(0xFF6FCB9A)) // Green circle background color
+                .background(Color.Green) // Green circle background color
                 .clickable { /* Handle click action */ },
             contentAlignment = Alignment.Center
         ) {
@@ -116,17 +98,6 @@ class UserProfileActivity : ComponentActivity() {
         }
     }
 
-    private fun navigateToEditProfile() {
-        val intent = Intent(this, EditUserProfileActivity::class.java).apply {
-            putExtra("username", username.value)
-            putExtra("pseudo", pseudo.value)
-            putExtra("description", description.value)
-            putExtra("date_of_birth", dateOfBirth.value)
-            putExtra("profile_image_uri", profileImageUri.value) // Pass profile image URI
-        }
-        editProfileLauncher.launch(intent)
-    }
-
     @Composable
     fun UserProfileContent(
         username: String,
@@ -137,49 +108,50 @@ class UserProfileActivity : ComponentActivity() {
         numberOfPosts: Int,
         numberOfLikes: Int,
         posts: List<String>, // Liste des posts
-        onSettingsClick: () -> Unit,
-        onLogoutClick: () -> Unit
+        onSettingsClick: () -> Unit
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            ProfilePicture() // Display the profile picture at the top left
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                IconButtonWithBackground(
-                    icon = Icons.Default.Settings,
-                    contentDescription = "Settings",
-                    onIconClick = onSettingsClick
-                )
-                Spacer(modifier = Modifier.width(8.dp)) // Space between buttons
-                IconButtonWithBackground(
-                    icon = Icons.Default.ExitToApp,
-                    contentDescription = "Logout",
-                    onIconClick = onLogoutClick
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ProfilePicture() // Display the profile picture at the top left
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
+                        Text(
+                            text = pseudo,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color(0xFF6FCB9A), // Green color for username
+                            fontSize = 24.sp // Increase font size
+                        )
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color(0xFF6FCB9A), // Green color for description
+                            fontSize = 24.sp // Increase font size
+                        )
+
+                    }
+                }
+                Row {
+                    IconButtonWithBackground(
+                        icon = Icons.Default.Settings,
+                        contentDescription = "Settings",
+                        onIconClick = onSettingsClick
+                    )
+                }
             }
+
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(
-                    text = "Profile",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    color = Color.White // Use the white color for text
-                )
-                ProfileItem(label = "Username:", value = username)
-                Divider(color = Color(0xFF6FCB9A), thickness = 1.dp) // Green divider
-                ProfileItem(label = "Pseudo:", value = pseudo)
-                Divider(color = Color(0xFF6FCB9A), thickness = 1.dp) // Green divider
-                ProfileItem(label = "Description:", value = description)
-                Divider(color = Color(0xFF6FCB9A), thickness = 1.dp) // Green divider
-                ProfileItem(label = "Date of Birth:", value = dateOfBirth)
-
                 // Affichage du nombre de publications
                 Box(
                     modifier = Modifier
@@ -190,7 +162,8 @@ class UserProfileActivity : ComponentActivity() {
                     Text(
                         text = "Nombre de publications: $numberOfPosts",
                         style = MaterialTheme.typography.labelLarge,
-                        color = Color.White
+                        color = Color(0xFF6FCB9A), // Green color for labels
+                        fontSize = 24.sp // Increase font size
                     )
                 }
 
@@ -204,14 +177,15 @@ class UserProfileActivity : ComponentActivity() {
                     Text(
                         text = "Nombre de likes: $numberOfLikes",
                         style = MaterialTheme.typography.labelLarge,
-                        color = Color.White
+                        color = Color(0xFF6FCB9A), // Green color for labels
+                        fontSize = 24.sp // Increase font size
                     )
                 }
 
                 // Affichage des posts
                 posts.forEach { post ->
                     GreenRectangle(text = post)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp)) // Increased space between posts
                 }
             }
         }
@@ -242,30 +216,14 @@ class UserProfileActivity : ComponentActivity() {
     }
 
     @Composable
-    fun ProfileItem(label: String, value: String) {
-        Column(modifier = Modifier.padding(vertical = 8.dp)) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color(0xFF6FCB9A) // Green color for the label
-            )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color(0xFF6FCB9A) // Green color for the value
-            )
-        }
-    }
-
-    @Composable
     fun GreenRectangle(text: String) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .height(100.dp) // Hauteur du rectangle
-                .background(Color.Gray, shape = MaterialTheme.shapes.medium)
-                .border(2.dp, Color.Green, shape = MaterialTheme.shapes.medium)
+                .background(Color(0xFF344347), shape = MaterialTheme.shapes.medium) // Grey color for background
+                .border(2.dp, Color(0xFF6FCB9A), shape = MaterialTheme.shapes.medium) // Green border color
         ) {
             Text(
                 text = text,
