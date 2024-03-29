@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="fr.isen.bert.rsspeedrun" />
-                  <option name="mobileSdkAppId" value="1:676898469644:android:c27b7cec5eab3d55043b29" />
-                  <option name="projectId" value="rsspeedrun-e4d81" />
-                  <option name="projectNumber" value="676898469644" />
+                  <option name="mobileSdkAppId" value="1:1023202684066:android:f2d69d0c71dc4da4ccfbfb" />
+                  <option name="projectId" value="rsspeedrun-25a70" />
+                  <option name="projectNumber" value="1023202684066" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

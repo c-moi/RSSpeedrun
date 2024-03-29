@@ -9,12 +9,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
+import fr.isen.bert.rsspeedrun.data.user.CurrentUser
 import fr.isen.bert.rsspeedrun.databinding.ActivitySignUpBinding
+import fr.isen.bert.rsspeedrun.model.User
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var firebaseAuth: FirebaseAuth
+
+    val auth = FirebaseAuth.getInstance()
+    private val user = CurrentUser()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -37,15 +42,12 @@ class SignUpActivity : AppCompatActivity() {
 
                 if (password.equals((confirmPassword))) {
 
-                    firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val intent = Intent(this, SignInActivity::class.java)
-                            startActivity(intent)
-                        } else {
-                            Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-
-                        }
-                    }
+                    user.createUser(auth,
+                        User(email,
+                            "", "",
+                            "", "", "", password))
+                    val intent = Intent(this, SignInActivity::class.java)
+                    startActivity(intent)
                 } else {
                     Toast.makeText(this, "Password is not matching", Toast.LENGTH_SHORT).show()
                 }

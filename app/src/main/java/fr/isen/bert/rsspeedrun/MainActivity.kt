@@ -169,18 +169,18 @@ class MainActivity : ComponentActivity() {
 
                     } else {
                         // rediriger vers l'activité d'authent
-                        Greeting("Android2")
+                        Greeting("Android2")*/
 
                         // créer un nouvel utilisateur
                         /*user.createUser(auth,
                             User("emmanuel.bert@gmail.com",
                                 "emmanuel", "bert",
-                               "cmoi", "ouai c greg", "osef", "cpalebon")
-                        )*/
+                               "cmoi", "ouai c greg", "osef", "cpalebon")*/
+                        //)
 
                         // connecter un utilisateur
-                        user.logInUser(auth, "emmanuel.bert@gmail.com", "cpalebon")
-                    }*/
+                        //user.logInUser(auth, "emmanuel.bert@gmail.com", "cpalebon")
+                    //}
                 }
             }
         }
