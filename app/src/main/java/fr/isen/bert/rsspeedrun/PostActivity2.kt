@@ -66,6 +66,7 @@ class EditPostActivity : ComponentActivity() {
                         onContentChange = { Content = it },
                         onSaveChanges = { saveChanges() }
                     )
+
                 }
             }
         }
@@ -141,7 +142,7 @@ class EditPostActivity : ComponentActivity() {
             )
             // Button to Save Changes
             Button(onClick = onSaveChanges, modifier = Modifier.fillMaxWidth()) {
-                Text("Save Changes")
+                Text("Post the post")
             }
         }
     }
@@ -172,7 +173,8 @@ fun BackButton() {
                 style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.Bold),
                 color = Color.White,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.size(256.dp) // Taille du texte
+                modifier = Modifier
+                    .size(256.dp) // Taille du texte
                     .padding(horizontal = 30.dp, vertical = 2.dp),
 
                 )

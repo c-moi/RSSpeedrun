@@ -123,43 +123,5 @@ fun SimpleOutlinedTextFieldSampleContent(label :String) {
 }
 
 
-@Composable
-fun DefinitivePostButton(title: String,game: String, Content: String){
-    val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 90.dp, vertical = 60.dp), // Ajoute des marges horizontales
-        horizontalArrangement = Arrangement.Absolute.Left
-    ) {
-        Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à gauche du bouton
-        Box(
-            modifier = Modifier
-                .size(80.dp) // Taille fixe du bouton
-                .background(color = secondary, shape = RectangleShape)
-                .clickable {
-                    val intent = Intent(context, PostActivity::class.java)
-                    launcher.launch(intent)
-                },
-            contentAlignment = Alignment.Center // Centrer le contenu dans le cercle
-        ) {
-            Text(
-                text = "Post",
-                style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.Bold),
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.size(256.dp) // Taille du texte
-                    .padding(horizontal = 30.dp, vertical = 2.dp),
 
-                )
-        }
-        Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à droite du bouton
-    }
-}
-
-fun onPostClicked(title: String, body: String) {
-    // Vous pouvez traiter les données ici, comme les envoyer à un serveur, les afficher, etc.
-    println("Titre: $title, Body: $body")
-}
 

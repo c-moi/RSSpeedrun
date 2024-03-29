@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import fr.isen.bert.rsspeedrun.ui.theme.background
@@ -68,13 +70,13 @@ class HomeActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //Header();
-                    ArtistCardsList(Post = posts)
+                    Header();
+                    //ArtistCardsList(Post = posts)
 
                     //Greeting2("zzzzzzz")
 
-                    //ProfileButton()
-                    //PostButton()
+                    ProfileButton()
+                    PostButton()
                 }
             }
         }
@@ -177,25 +179,17 @@ fun PostButton() {
     }
 }
 @Composable
-fun ArtistCardModifiers(
-    artist: Post
-) {
+fun ArtistCardModifiers(artist: Post) {
     val padding = 16.dp
     Column(
-        Modifier
-            //.clickable(onClick = onClick)
+        modifier = Modifier
             .padding(padding)
             .fillMaxWidth()
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {}
-        Spacer(Modifier.size(padding))
-        Card(
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        ) { BoxWithConstraints {
-            Text("My minHeight is $minHeight while my maxWidth is $maxWidth")
-        } }
+
     }
 }
+
 
 @Composable
 fun ArtistCardsList(Post: List<Post>) {
@@ -204,20 +198,8 @@ fun ArtistCardsList(Post: List<Post>) {
             ArtistCardModifiers(Post)
         }
     }
+
 }
 
-@Composable
-fun Greeting2(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview2() {
-    RSSpeedrunTheme {
-        Greeting2("Android")
-    }
-}
+
