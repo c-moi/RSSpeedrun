@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -39,7 +38,6 @@ android {
     }
     buildFeatures {
         compose = true
-        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -61,13 +59,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.database)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -75,17 +66,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation ("androidx.compose.ui:ui:1.6.4")
-    implementation ("androidx.compose.material:material:1.6.4")
-    implementation ("androidx.compose.ui:ui-tooling:1.6.4")
-
-
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
-    implementation("com.google.firebase:firebase-analytics")
-
-
-    implementation ("io.coil-kt:coil-compose:2.5.0")
-    implementation ("androidx.compose.runtime:runtime:1.6.4")
+    implementation ("io.coil-kt:coil:1.4.0")
+    implementation ("androidx.compose.ui:ui:1.0.5")
+    implementation ("androidx.compose.material3:material3:1.0.0-alpha06")
+    implementation ("androidx.activity:activity-compose:1.4.0")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.0.5")
 
 }
