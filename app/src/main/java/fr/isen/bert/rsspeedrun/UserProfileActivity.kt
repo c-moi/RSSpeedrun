@@ -13,25 +13,34 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import fr.isen.bert.rsspeedrun.EditUserProfileActivity
+import fr.isen.bert.rsspeedrun.R
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
 class UserProfileActivity : ComponentActivity() {
@@ -92,7 +101,18 @@ class UserProfileActivity : ComponentActivity() {
     }
 
     private fun performLogout() {
-        TODO("Not yet implemented")
+        // Implementation of logout logic goes here
+    }
+
+    private fun navigateToEditProfile() {
+        val intent = Intent(this, EditUserProfileActivity::class.java).apply {
+            putExtra("username", username.value)
+            putExtra("pseudo", pseudo.value)
+            putExtra("description", description.value)
+            putExtra("date_of_birth", dateOfBirth.value)
+            putExtra("profile_image_uri", profileImageUri.value) // Pass profile image URI
+        }
+        editProfileLauncher.launch(intent)
     }
 
     @Composable
@@ -116,15 +136,58 @@ class UserProfileActivity : ComponentActivity() {
         }
     }
 
-    private fun navigateToEditProfile() {
-        val intent = Intent(this, EditUserProfileActivity::class.java).apply {
-            putExtra("username", username.value)
-            putExtra("pseudo", pseudo.value)
-            putExtra("description", description.value)
-            putExtra("date_of_birth", dateOfBirth.value)
-            putExtra("profile_image_uri", profileImageUri.value) // Pass profile image URI
+    @Composable
+    fun IconButtonWithBackground(
+        icon: ImageVector,
+        contentDescription: String,
+        onIconClick: () -> Unit,
+        backgroundColor: Color = Color(0xFF6FCB9A), // Green background
+        iconTint: Color = Color(0xFF9DADAC) // Grey icon
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .background(backgroundColor, shape = CircleShape)
+                .padding(8.dp)
+                .size(48.dp)
+                .clickable(onClick = onIconClick)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = iconTint
+            )
         }
-        editProfileLauncher.launch(intent)
+    }
+
+    @Composable
+    fun ProfileItem(label: String, value: String) {
+        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineSmall, // Utiliser une taille de texte plus grande
+                color = Color(0xFF6FCB9A)
+            )
+        }
+    }
+
+    @Composable
+    fun GreenRectangle(text: String) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .height(100.dp) // Hauteur du rectangle
+                .background(Color.Gray, shape = MaterialTheme.shapes.medium)
+                .border(2.dp, Color(0xFF6FCB9A), shape = MaterialTheme.shapes.medium) // Green border
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.White,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 
     @Composable
@@ -171,12 +234,7 @@ class UserProfileActivity : ComponentActivity() {
                     contentDescription = "Settings",
                     onIconClick = onSettingsClick
                 )
-                Spacer(modifier = Modifier.width(8.dp)) // Space between buttons
-                IconButtonWithBackground(
-                    icon = Icons.Default.ExitToApp,
-                    contentDescription = "Logout",
-                    onIconClick = onLogoutClick
-                )
+
             }
 
             // Affichage du nombre de publications
@@ -212,64 +270,6 @@ class UserProfileActivity : ComponentActivity() {
                 GreenRectangle(text = post)
                 Spacer(modifier = Modifier.height(8.dp))
             }
-        }
-    }
-
-
-
-
-    @Composable
-    fun IconButtonWithBackground(
-        icon: ImageVector,
-        contentDescription: String,
-        onIconClick: () -> Unit,
-        backgroundColor: Color = Color(0xFF6FCB9A), // Green background
-        iconTint: Color = Color(0xFF9DADAC) // Grey icon
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .background(backgroundColor, shape = CircleShape)
-                .padding(8.dp)
-                .size(48.dp)
-                .clickable(onClick = onIconClick)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                tint = iconTint
-            )
-        }
-    }
-
-    @Composable
-    fun ProfileItem(label: String, value: String) {
-        Column(modifier = Modifier.padding(vertical = 8.dp)) {
-            Text(
-                text = value,
-                style = MaterialTheme.typography.headlineSmall, // Utiliser une taille de texte plus grande
-                color = Color(0xFF6FCB9A)
-            )
-        }
-    }
-
-
-    @Composable
-    fun GreenRectangle(text: String) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .height(100.dp) // Hauteur du rectangle
-                .background(Color.Gray, shape = MaterialTheme.shapes.medium)
-                .border(2.dp, Color(0xFF6FCB9A), shape = MaterialTheme.shapes.medium) // Green border
-        ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.White,
-                modifier = Modifier.padding(16.dp)
-            )
         }
     }
 }
