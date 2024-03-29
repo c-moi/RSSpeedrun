@@ -54,4 +54,5 @@
         <item name="android:textSize">14sp</item>
         <item name="android:singleLine">true</item>
     </style>
+    <style name="Theme.RSSpeedrun" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
