@@ -1,7 +1,8 @@
 package fr.isen.bert.rsspeedrun
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
+import com.google.firebase.Firebase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
 import com.google.firebase.auth.FirebaseAuth
 import fr.isen.bert.rsspeedrun.data.post.ManagePost
 import fr.isen.bert.rsspeedrun.data.user.CurrentUser
@@ -34,13 +43,12 @@ class MainActivity : ComponentActivity() {
             val chgUser = ManageUser()
             val post = ManagePost()
             RSSpeedrunTheme {
-
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (currentUser != null) {
+                    goToProfile()
+                    /*if (currentUser != null) {
                         // rediriger vers une activité de l'appli
                         Greeting("Android")
 
@@ -172,26 +180,14 @@ class MainActivity : ComponentActivity() {
 
                         // connecter un utilisateur
                         user.logInUser(auth, "emmanuel.bert@gmail.com", "cpalebon")
-                    }
-
+                    }*/
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RSSpeedrunTheme {
-        Greeting("Android")
+    
+    private fun goToProfile() {
+        val intent = Intent(this@MainActivity, ProfilUtilisateurActivity::class.java)
+        startActivity(intent)
     }
 }
