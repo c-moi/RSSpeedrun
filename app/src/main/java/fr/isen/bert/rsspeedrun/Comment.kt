@@ -13,9 +13,15 @@ data class Comment(
     val responses: SnapshotStateList<Comment> = mutableStateListOf()
 ) {
     var likes by mutableStateOf(0)
+    var liked by mutableStateOf(false)
 
-    fun addLike() {
-        likes++
+    fun toggleLike() {
+        if (liked) {
+            likes--
+        } else {
+            likes++
+        }
+        liked = !liked
     }
 
     fun addResponse(response: Comment) {

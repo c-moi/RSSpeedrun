@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Send
@@ -67,7 +68,7 @@ fun PostList(posts: List<Post>, updateCounter: MutableState<Int>) {
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         items(posts) { post ->
             PostView(post = post, onLike = {
-                post.addLike()
+                post.toggleLike()
                 updateCounter.value++
             }, onCommentAdded = { commentText ->
                 post.addComment(Comment(id = UUID.randomUUID().toString(), postId = post.id, content = commentText))
@@ -101,8 +102,11 @@ fun PostView(
             Text(text = post.content, color = Color.White)
             Text(text = "Likes: ${post.likes}", color = Color.White)
             Row(modifier = modifier.padding(top = 8.dp)) {
-                IconButton(onClick = { onLike() }) {
-                    LikeIcon()
+                IconButton(onClick = {
+                    post.toggleLike()
+                    updateCounter.value = updateCounter.value xor 1
+                }) {
+                    LikeIcon(liked = post.liked)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = { isCommenting = !isCommenting }) {
@@ -150,7 +154,7 @@ fun PostView(
                 post.comments.forEach { comment ->
                     CommentView(
                         comment = comment,
-                        onLike = { comment.addLike() },
+                        onLike = { comment.toggleLike() },
                         onRespond = { responseText ->
                             val newResponse = Comment(
                                 id = UUID.randomUUID().toString(),
@@ -201,7 +205,12 @@ fun CommentView(
             if (!comment.isDeleted) {
                 Text(text = "${comment.likes} likes", color = Color.White)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onLike) { LikeIcon() }
+                    IconButton(onClick = {
+                        comment.toggleLike()
+                        updateCounter.value++ // Idem, ajustez en fonction de vos besoins de mise à jour d'UI
+                    }) {
+                        LikeIcon(liked = comment.liked)
+                    }
                     Spacer(modifier = Modifier.width(8.dp))
                     IconButton(onClick = { isReplying = !isReplying }) { ResponseIcon() }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -249,7 +258,7 @@ fun CommentView(
                 comment.responses.forEach { response ->
                     CommentView(
                         comment = response,
-                        onLike = { response.addLike(); updateCounter.value++ },
+                        onLike = { response.toggleLike(); updateCounter.value++ },
                         onRespond = { newText ->
                             val newResponse = Comment(id = UUID.randomUUID().toString(), postId = comment.postId, content = newText, isDeleted = false)
                             response.addResponse(newResponse)
@@ -294,7 +303,21 @@ fun DefaultPreview() {
 }
 
 @Composable
-fun LikeIcon() { Icon(imageVector = Icons.Filled.Favorite, contentDescription = "Like", tint = Color.Red) }
+fun LikeIcon(liked: Boolean) {
+    if (liked) {
+        Icon(
+            imageVector = Icons.Filled.Favorite,
+            contentDescription = "Unlike",
+            tint = Color.Red
+        )
+    } else {
+        Icon(
+            imageVector = Icons.Filled.FavoriteBorder,
+            contentDescription = "Like",
+            tint = Color.White
+        )
+    }
+}
 
 @Composable
 fun CommentIcon() { Icon(imageVector = Icons.Filled.Add, contentDescription = "Comment", tint = Color.White) }

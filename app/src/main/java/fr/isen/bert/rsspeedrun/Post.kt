@@ -12,9 +12,15 @@ data class Post(
     val comments: SnapshotStateList<Comment> = mutableStateListOf()
 ) {
     var likes by mutableStateOf(initialLikes)
+    var liked by mutableStateOf(false)
 
-    fun addLike() {
-        likes++
+    fun toggleLike() {
+        liked = !liked
+        if (liked) {
+            likes++
+        } else {
+            likes = maxOf(0, likes - 1) // Évite les nombres négatifs
+        }
     }
 
     fun addComment(comment: Comment) {
