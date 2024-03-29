@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Send
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +38,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.platform.LocalContext
 import fr.isen.bert.rsspeedrun.ui.theme.customgreen
 import java.util.*
@@ -75,6 +76,7 @@ fun PostList(posts: List<Post>, updateCounter: MutableState<Int>) {
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostView(
     post: Post,
@@ -113,6 +115,15 @@ fun PostView(
                         value = commentText,
                         onValueChange = { commentText = it },
                         label = { Text("Ajouter un commentaire", color = Color.White) },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            cursorColor = Color.White,
+                            focusedBorderColor = customgreen,
+                            unfocusedBorderColor = Color.Gray,
+                            unfocusedTextColor = Color.White,
+                            focusedTextColor = Color.White,
+                            focusedLabelColor = customgreen,
+                            unfocusedLabelColor = Color.Gray
+                        ),
                         modifier = Modifier.fillMaxWidth()
                     )
                     if (commentText.isNotBlank()) {
@@ -164,6 +175,7 @@ fun PostView(
 
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentView(
     comment: Comment,
@@ -200,6 +212,15 @@ fun CommentView(
                         value = responseText,
                         onValueChange = { responseText = it },
                         label = { Text("Ajouter une réponse", color = Color.White) },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            cursorColor = Color.White,
+                            focusedBorderColor = customgreen,
+                            unfocusedBorderColor = Color.Gray,
+                            unfocusedTextColor = Color.White,
+                            focusedTextColor = Color.White,
+                            focusedLabelColor = customgreen,
+                            unfocusedLabelColor = Color.Gray
+                        ),
                         trailingIcon = {
                             IconButton(onClick = {
                                 if (responseText.isNotBlank()) {
