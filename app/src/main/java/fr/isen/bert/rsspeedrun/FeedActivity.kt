@@ -1,10 +1,14 @@
 package fr.isen.bert.rsspeedrun
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,11 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,6 +36,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,8 +57,20 @@ class FeedActivity : ComponentActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = background,
             ) {
+                Header()
+                BackButton()
+                ProfileButton()
+
+
                 Column {
                     // Utiliser LazyColumn pour afficher les posts
+                    Row(
+                        modifier = Modifier
+                            .height(150.dp)
+                            .fillMaxWidth()
+                    ) {
+                        // Contenu de la Row
+                    }
                     LazyColumn (
                         modifier = Modifier.weight(1f),
                         contentPadding = PaddingValues(vertical = 16.dp, horizontal = 10.dp)
@@ -97,7 +119,8 @@ fun EditPostContent(
             },
             label = { Text("Title") },
             modifier = Modifier.fillMaxWidth(),
-            isError = titleError
+            isError = titleError,
+            colors = textFieldColors()
         )
 
         // Afficher le message d'erreur en rouge s'il y a une erreur
@@ -119,7 +142,8 @@ fun EditPostContent(
             },
             label = { Text("Game") },
             modifier = Modifier.fillMaxWidth(),
-            isError = gameError
+            isError = gameError,
+            colors = textFieldColors()
         )
 
         // Afficher le message d'erreur en rouge s'il y a une erreur
@@ -141,7 +165,8 @@ fun EditPostContent(
             },
             label = { Text("Content") },
             modifier = Modifier.fillMaxWidth(),
-            isError = contentError
+            isError = contentError,
+            colors = textFieldColors()
         )
 
         // Afficher le message d'erreur en rouge s'il y a une erreur
@@ -163,7 +188,8 @@ fun EditPostContent(
                     title = ""
                     game = ""
                     content = ""
-                } else {
+                }
+                else {
                     // Afficher une erreur si l'un des champs est vide
                     if (title.isBlank()) {
                         // Afficher une erreur pour le champ du titre
@@ -185,6 +211,7 @@ fun EditPostContent(
         }
     }
 }
+
 
 
 @Composable
@@ -278,5 +305,38 @@ fun DisplayPosts(postsList: List<List<String>>) {
         items(postsList) { post ->
             PostItem(post = post)
         }
+    }
+}
+
+@Composable
+fun ProfileButton2() {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 2.dp, vertical = 0.dp), // Ajoute des marges horizontales et verticales
+        horizontalArrangement = Arrangement.Absolute.Left
+    ) {
+        Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à gauche du bouton
+        Box(
+            modifier = Modifier
+                .size(80.dp) // Taille fixe du bouton
+                .background(color = secondary, shape = CircleShape)
+                .clickable {
+                    val intent = Intent(context, ProfilActivity::class.java)
+                    launcher.launch(intent)
+                },
+            contentAlignment = Alignment.Center // Centrer le contenu dans le cercle
+        ) {
+            Text(
+                text = "P",
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                style = TextStyle(fontSize = 45.sp, fontWeight = FontWeight.Bold) // Ajuster la taille de la police
+            )
+        }
+        Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à droite du bouton
     }
 }
