@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    /*if (currentUser != null) {
+                    if (currentUser != null) {
                         // rediriger vers une activité de l'appli
                         Greeting("Android")
 
@@ -152,7 +152,7 @@ class MainActivity : ComponentActivity() {
 
                         // connecter un utilisateur
                         user.logInUser(auth, "emmanuel.bert@gmail.com", "cpalebon")
-                    }*/
+                    }
                 }
             }
         }
