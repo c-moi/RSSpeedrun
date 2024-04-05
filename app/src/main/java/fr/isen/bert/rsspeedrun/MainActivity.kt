@@ -8,12 +8,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.google.firebase.auth.FirebaseAuth
+import fr.isen.bert.rsspeedrun.data.post.ManagePost
+import fr.isen.bert.rsspeedrun.data.user.CurrentUser
+import fr.isen.bert.rsspeedrun.data.user.ManageUser
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            // pour checker si un utilisateur est connecté
+            auth = FirebaseAuth.getInstance()
+
+            val currentUser = auth.currentUser
+            val user = CurrentUser()
+            val chgUser = ManageUser()
+            val post = ManagePost()
+
             RSSpeedrunTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -22,7 +38,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     if (currentUser != null) {
                         // rediriger vers une activité de l'appli
-                        Greeting("Android")
+                        //Greeting("Android")
 
                         // supprimer l'utilisateur
                         //user.deleteUser(auth, "emmanuel.bert2@gmail.com", currentUser) {updatedUser ->
