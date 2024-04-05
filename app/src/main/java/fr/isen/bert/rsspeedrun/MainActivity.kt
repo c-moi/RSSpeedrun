@@ -20,7 +20,139 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    /*if (currentUser != null) {
+                        // rediriger vers une activité de l'appli
+                        Greeting("Android")
 
+                        // supprimer l'utilisateur
+                        //user.deleteUser(auth, "emmanuel.bert2@gmail.com", currentUser) {updatedUser ->
+                        //    currentUser = updatedUser
+                        //}
+                        //if (currentUser != null) {
+                        //    auth.signOut()
+                        //}
+
+                        // changer les infos d'un utilisateur
+                        //chgUser.modifUser("emmanuel.bert2@gmail.com",
+                        //    User("emmanuel.bert2@gmail.com",
+                        //                "emmanuel", "bert",
+                        //                "cpamoi", "cpalebon"))
+
+                        // déconnecter un utilisateur
+                        //user.logOutUser(auth)
+
+                        // ajouter un post
+                        /*var userId:String = ""
+                        chgUser.findUser("emmanuel.bert@gmail.com") { _, id ->
+                            if (id != null){
+                                userId = id
+
+                                //Log.d("idname", "ceci est mon id $userId")
+                                post.addPost(
+                                    "hello",
+                                    "image",
+                                    "ceci est un post",
+                                    "2024/03/29",
+                                    userId)
+                            } else {
+                                Log.d("idnameErr", "aucun id récupéré")
+                            }
+                        }*/
+
+                        // lister les posts
+                        /*chgUser.findUser("emmanuel.bert@gmail.com") { _, id ->
+                            if (id != null) {
+                                var postIds:List<String> = emptyList()
+
+                                post.listPostByOwner(id) { ids ->
+                                    postIds = ids
+
+                                    Log.d("UserPostsIds", "IDs des posts de l'utilisateur: $postIds")
+
+                                    if (postIds.isNotEmpty())
+                                    {
+                                        post.findPosts(postIds) { postList ->
+                                            Log.d("Posts", "Liste des posts: ")
+                                            for (unpost in postList) {
+                                                Log.d("Post", "Title: ${unpost.title}, Picture: ${unpost.picture}, " +
+                                                        "Description: ${unpost.description}")
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                Log.d("idnameErr", "aucun id récupéré")
+                            }
+                        }*/
+
+                        //pour supprimer un post
+                        /*chgUser.findUser("emmanuel.bert@gmail.com") { _, id ->
+                            if (id != null) {
+                                var postIds:List<String> = emptyList()
+
+                                post.listPostByOwner(id) { ids ->
+                                    postIds = ids
+
+                                    Log.d("UserPostsIds", "IDs des posts de l'utilisateur: $postIds")
+
+                                    for (postId in postIds) {
+                                        post.getPost(postId) { unpost ->
+                                            // Vérifier si selected est true
+                                            if (unpost != null && unpost.selected) {
+                                                // Supprimer le post
+                                                post.delPost(postId)
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                Log.d("idnameErr", "aucun id récupéré")
+                            }
+                        }*/
+
+                        // pour modifier un post
+                        chgUser.findUser("emmanuel.bert@gmail.com") { _, id ->
+                            if (id != null) {
+                                var postIds:List<String> = emptyList()
+
+                                post.listPostByOwner(id) { ids ->
+                                    postIds = ids
+
+                                    Log.d("UserPostsIds", "IDs des posts de l'utilisateur: $postIds")
+
+                                    for (postId in postIds) {
+                                        post.getPost(postId) { unpost ->
+                                            // Vérifier si selected est true
+                                            if (unpost != null && unpost.selected) {
+
+                                                post.modifPost(postId, Post(
+                                                    postId,"helloNEW","",
+                                                    "c'est gregours","newDate",
+                                                    id,true
+                                                ))
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                Log.d("idnameErr", "aucun id récupéré")
+                            }
+                        }
+
+                    } else {
+                        // rediriger vers l'activité d'authent
+                        Greeting("Android2")
+
+                        // créer un nouvel utilisateur
+                        /*user.createUser(auth,
+                            User("emmanuel.bert@gmail.com",
+                                "emmanuel", "bert",
+                               "cmoi", "ouai c greg", "osef", "cpalebon")
+                        )*/
+
+                        // connecter un utilisateur
+                        user.logInUser(auth, "emmanuel.bert@gmail.com", "cpalebon")
+                    }*/
                 }
             }
         }
