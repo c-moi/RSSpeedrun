@@ -10,9 +10,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -43,7 +46,11 @@ class EditPostActivity : ComponentActivity() {
     private var Title by mutableStateOf("")
     private var Game by mutableStateOf("")
     private var Content by mutableStateOf("")
-
+    val postsList = listOf(
+        PostContent("Titre 1", "Jeu 1", "Contenu 1"),
+        PostContent("Titre 2", "Jeu 2", "Contenu 2"),
+        PostContent("Titre 3", "Jeu 3", "Contenu 3")
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -55,6 +62,7 @@ class EditPostActivity : ComponentActivity() {
 
                 {
                     Header()
+                    DisplayPosts(postsList)
                     ProfileButton()
                     BackButton()
                     EditPostContent(
@@ -66,6 +74,7 @@ class EditPostActivity : ComponentActivity() {
                         onContentChange = { Content = it },
                         onSaveChanges = { saveChanges() }
                     )
+
 
                 }
             }
@@ -94,59 +103,72 @@ class EditPostActivity : ComponentActivity() {
         onContentChange: (String) -> Unit,
         onSaveChanges: () -> Unit
     ) {
+        var postsList by remember { mutableStateOf(mutableListOf<List<String>>()) }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 150.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-
         ) {
             Text(
                 text = "New Post",
-                style = MaterialTheme.typography.headlineSmall,
+                //style = MaterialTheme.typography.headline4,
                 color = secondary
-
             )
-
 
             // Title TextField
             OutlinedTextField(
                 value = Title,
-                colors = textFieldColors(),
                 onValueChange = onTitleChange,
                 label = { Text("Title") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                //keyboardOptions = androidx.compose.ui.text.input.KeyboardOptions(keyboardType = KeyboardType.Text),
                 singleLine = true
             )
+
             // Game TextField
             OutlinedTextField(
                 value = Game,
-                colors = textFieldColors(),
                 onValueChange = onGameChange,
                 label = { Text("Game") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                //keyboardOptions = androidx.compose.ui.text.input.KeyboardOptions(keyboardType = KeyboardType.Text),
                 singleLine = true
             )
+
             // Content TextField
             OutlinedTextField(
                 value = Content,
-                colors = textFieldColors(),
                 onValueChange = onContentChange,
                 label = { Text("Content") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                //keyboardOptions = androidx.compose.ui.text.input.KeyboardOptions(keyboardType = KeyboardType.Text),
                 singleLine = true
             )
+
             // Button to Save Changes
-            Button(onClick = onSaveChanges, modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = {
+                    // Create a unique post
+                    val postUnique = listOf(Title, Game, Content)
+                    // Add the unique post to the postsList
+                    postsList.add(postUnique)
+                    // Clear the fields after adding
+                    onTitleChange("")
+                    onGameChange("")
+                    onContentChange("")
+
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text("Post")
             }
         }
     }
 }
+
 @Composable
 fun BackButton() {
     val context = LocalContext.current
@@ -163,8 +185,8 @@ fun BackButton() {
                 .size(80.dp) // Taille fixe du bouton
                 .background(color = secondary, shape = CircleShape)
                 .clickable {
-                    val intent = Intent(context, HomeActivity::class.java)
-                    launcher.launch(intent)
+                    //val intent = Intent(context, HomeActivity::class.java)
+                    //launcher.launch(intent)
                 },
             contentAlignment = Alignment.Center // Centrer le contenu dans le cercle
         ) {
@@ -190,4 +212,32 @@ fun textFieldColors(): TextFieldColors {
         focusedLabelColor = Color.Green,
         unfocusedLabelColor = secondary,
     )
+}
+
+@Composable
+fun DisplayPosts(postsList: List<PostContent>) {
+    val posts by remember { mutableStateOf(postsList) }
+
+    LazyColumn (
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 500.dp, horizontal = 10.dp)
+    ){
+        items(posts) { post ->
+            PostItem(post = post)
+        }
+    }
+}
+
+@Composable
+fun PostItem(post: PostContent) {
+    val textColor = secondary
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        // Accédez aux propriétés de l'objet PostContent correctement
+        Text(text = "Title: ${post.Title}", color = textColor)
+        Text(text = "Game: ${post.Game}", color = textColor)
+        Text(text = "Content: ${post.Content}", color = textColor)
+    }
 }

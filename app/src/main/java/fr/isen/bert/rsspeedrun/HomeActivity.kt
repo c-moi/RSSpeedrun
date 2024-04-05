@@ -1,4 +1,5 @@
 package fr.isen.bert.rsspeedrun
+
 import android.content.Intent
 import androidx.compose.ui.graphics.Color
 import android.os.Bundle
@@ -159,7 +160,7 @@ fun PostButton() {
                 .size(80.dp) // Taille fixe du bouton
                 .background(color = secondary, shape = CircleShape)
                 .clickable {
-                    val intent = Intent(context, EditPostActivity::class.java)
+                    val intent = Intent(context, FeedActivity::class.java)
                     launcher.launch(intent)
                 },
             contentAlignment = Alignment.Center // Centrer le contenu dans le cercle
@@ -178,28 +179,3 @@ fun PostButton() {
         Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à droite du bouton
     }
 }
-@Composable
-fun ArtistCardModifiers(artist: Post) {
-    val padding = 16.dp
-    Column(
-        modifier = Modifier
-            .padding(padding)
-            .fillMaxWidth()
-    ) {
-
-    }
-}
-
-
-@Composable
-fun ArtistCardsList(Post: List<Post>) {
-    LazyColumn {
-        items(Post) { Post ->
-            ArtistCardModifiers(Post)
-        }
-    }
-
-}
-
-
-
