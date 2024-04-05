@@ -20,16 +20,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Call the goToProfile function to navigate to UserProfileActivity
-                    goToProfile()
+
                 }
             }
         }
-    }
-
-    // Function to navigate to UserProfileActivity
-    private fun goToProfile() {
-        val intent = Intent(this, UserProfileActivity::class.java)
-        startActivity(intent)
     }
 }
