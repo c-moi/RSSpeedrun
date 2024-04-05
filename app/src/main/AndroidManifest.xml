@@ -18,7 +18,7 @@
             android:label="@string/title_activity_post"
             android:theme="@style/Theme.RSSpeedrun" />
         <activity
-            android:name=".PostActivity"
+            android:name=".FeedActivity"
             android:exported="false"
             android:label="@string/title_activity_post"
             android:theme="@style/Theme.RSSpeedrun" />
