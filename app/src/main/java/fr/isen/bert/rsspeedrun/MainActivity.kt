@@ -4,10 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,21 +11,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RSSpeedrunTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // Call the goToProfile function to navigate to UserProfileActivity
-                    goToProfile()
-                }
+                val intent = Intent(this@MainActivity, UserProfileActivity::class.java)
+                startActivity(intent)
             }
         }
-    }
-
-    // Function to navigate to UserProfileActivity
-    private fun goToProfile() {
-        val intent = Intent(this, UserProfileActivity::class.java)
-        startActivity(intent)
     }
 }
