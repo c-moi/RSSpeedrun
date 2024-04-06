@@ -41,6 +41,10 @@ class MainActivity : ComponentActivity() {
             val chgUser = ManageUser()
             val post = ManagePost()
             RSSpeedrunTheme {
+                val intent = Intent(this@MainActivity, UserProfileActivity::class.java)
+                startActivity(intent)
+            }
+        }
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
