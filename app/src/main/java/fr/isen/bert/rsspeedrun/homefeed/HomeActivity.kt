@@ -67,8 +67,26 @@ class HomeActivity : ComponentActivity() {
                     ProfileButton()
                     PostButton()
 
+                    chgUser.findUser("") { _, id ->
+                        var postIds:List<String> = emptyList()
 
-                    PostItem(posts.listPost())
+                        post.listPost(id) { ids ->
+                            postIds = ids
+
+                            Log.d("UserPostsIds", "IDs des posts de l'utilisateur: $postIds")
+
+                            if (postIds.isNotEmpty())
+                            {
+                                post.findPosts(postIds) { postList ->
+                                    Log.d("Posts", "Liste des posts: ")
+                                    for (unpost in postList) {
+                                        Log.d("Post", "Title: ${unpost.title}, Picture: ${unpost.picture}, " +
+                                                "Description: ${unpost.description}")
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
