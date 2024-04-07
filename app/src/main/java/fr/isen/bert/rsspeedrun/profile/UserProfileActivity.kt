@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,17 +37,42 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import com.google.firebase.auth.FirebaseUser
+import fr.isen.bert.rsspeedrun.data.user.ManageUser
 import fr.isen.bert.rsspeedrun.homefeed.HomeActivity
 import java.io.Serializable
 
 class UserProfileActivity : ComponentActivity() {
     private var userProfile by mutableStateOf(UserProfile(pseudo = "", description = "", email = "", profileImageUri = null))
+    private var loading by mutableStateOf(true)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val currentUser = intent.getParcelableExtra<FirebaseUser>("user")
+
+        val dataUser = ManageUser()
+        dataUser.findUser(currentUser!!.email ?: "") { user, _ ->
+            userProfile.pseudo = user?.username ?: ""
+            userProfile.description = user?.bio ?: ""
+            userProfile.email = currentUser.email ?: ""
+            //userProfile.profileImageUri = user?.pp ?: ""
+            loading = false
+
+            Log.d("nom", "${userProfile.pseudo}")
+            Log.d("test2", "${currentUser?.email}")
+        }
+
         setContent {
             MaterialTheme {
-                ProfileScreen(userProfile) { updatedProfile ->
-                    updateUserProfile(updatedProfile)
+
+                if (loading) {
+                    // Afficher une indication de chargement
+                    LoadingScreen()
+                } else {
+                    // Afficher le profil une fois les données chargées
+                    ProfileScreen(userProfile) { updatedProfile ->
+                        updateUserProfile(updatedProfile)
+                    }
                 }
             }
         }
@@ -53,6 +80,16 @@ class UserProfileActivity : ComponentActivity() {
 
     fun updateUserProfile(updatedProfile: UserProfile) {
         userProfile = updatedProfile
+    }
+}
+
+@Composable
+fun LoadingScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator() // Vous pouvez remplacer cela par toute autre indication de chargement
     }
 }
 
@@ -168,6 +205,7 @@ fun ProfileContent(userProfile: UserProfile, onUpdateUserProfile: (UserProfile) 
             Column(
                 modifier = Modifier.padding(start = 16.dp)
             ) {
+                Log.d("nom ?", "${userProfile.pseudo}")
                 userProfile.pseudo?.let { pseudo ->
                     Text(
                         fontWeight = FontWeight.Bold,
@@ -267,9 +305,9 @@ fun PublicationsAndLikes(userProfile: UserProfile) {
 
 data class UserProfile(
     val name: String = "",
-    val description: String = "",
-    val email: String = "",
-    val pseudo: String? = null,
+    var description: String = "",
+    var email: String = "",
+    var pseudo: String? = null,
     var profileImageUri: String? = null,
     val numPublications: Int = 10, // Example number of publications
     val numLikes: Int = 100 // Example number of likes

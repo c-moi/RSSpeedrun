@@ -80,8 +80,6 @@ class ManageUser {
                                 userId?.let {
                                     val updatedUserData = hashMapOf<String, Any>()
 
-                                    updatedUser.firstname.let { updatedUserData["firstname"] = it }
-                                    updatedUser.lastname.let { updatedUserData["lastname"] = it }
                                     updatedUser.username.let { updatedUserData["username"] = it }
                                     updatedUser.bio.let { updatedUserData["bio"] = it }
                                     updatedUser.pp.let { updatedUserData["pp"] = it }
