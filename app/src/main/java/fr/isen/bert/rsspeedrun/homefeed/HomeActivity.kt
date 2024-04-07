@@ -101,12 +101,23 @@ class HomeActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Header()
-
                     ProfileButton(currentUser)
-                    PostButton()
+                    Column{
 
-                    Column {
-                        DisplayPostList(postDetails)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ){
+
+                            PostButton()
+                        }
+
+
+                        Column {
+                            DisplayPostList(postDetails)
+                    }
+
+
                     }
                 }
             }
@@ -162,7 +173,9 @@ fun ProfileButton(currentUser: FirebaseUser?) {
                         val intent = Intent(context, UserProfileActivity::class.java)
                         launcher.launch(intent)
                     } else {
-                        TODO("faire le lien avec l'activité de log in de sony")
+                        //"faire le lien avec l'activité de log in de sony"
+                        val intent = Intent(context, UserProfileActivity::class.java)
+                        launcher.launch(intent)
                     }
                 },
             contentAlignment = Alignment.Center // Centrer le contenu dans le cercle
