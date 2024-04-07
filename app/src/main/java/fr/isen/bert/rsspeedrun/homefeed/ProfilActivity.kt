@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import fr.isen.bert.rsspeedrun.homefeed.HomeActivity
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
 class ProfilActivity : ComponentActivity() {
@@ -23,6 +24,13 @@ class ProfilActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Greeting3("Android")
+                    val intent = Intent(this, HomeActivity::class.java)
+
+                    // Démarrez l'activité HomeActivity
+                    startActivity(intent)
+
+                    // Terminez l'activité MainActivity
+                    finish()
                 }
             }
         }

@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,31 +35,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import fr.isen.bert.rsspeedrun.data.post.ManagePost
+import fr.isen.bert.rsspeedrun.model.Post
+import fr.isen.bert.rsspeedrun.profile.UserProfileActivity
 import fr.isen.bert.rsspeedrun.ui.theme.background
+import fr.isen.bert.rsspeedrun.ui.theme.grey
 import fr.isen.bert.rsspeedrun.ui.theme.secondary
-
-data class Post(
-    val user: String,
-    val game: String,
-    val content: String
-)
-val posts: List<Post> = listOf(
-    Post(user = "Utilisateur1", game = "Jeu1", content = "Contenu1"),
-    Post(user = "Utilisateur2", game = "Jeu2", content = "Contenu2"),
-    // Ajoutez autant d'éléments de post que nécessaire
-)
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val posts: List<Post> = listOf(
-            Post(user = "Utilisateur1", game = "Jeu1", content = "Contenu1"),
-            Post(user = "Utilisateur2", game = "Jeu2", content = "Contenu2"),
-            // Ajoutez autant d'éléments de post que nécessaire
-        )
+
+        val posts = ManagePost()
+
         setContent {
             RSSpeedrunTheme {
                 // A surface container using the 'background' color from the theme
@@ -63,13 +59,16 @@ class HomeActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Header();
+                    Header()
                     //ArtistCardsList(Post = posts)
 
                     //Greeting2("zzzzzzz")
 
                     ProfileButton()
                     PostButton()
+
+
+                    PostItem(posts.listPost())
                 }
             }
         }
@@ -169,5 +168,86 @@ fun PostButton() {
                 )
         }
         Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à droite du bouton
+    }
+}
+
+@Composable
+fun PostItem(post: List<Post>) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(grey)
+            .border(5.dp, secondary),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Emplacement pour la photo de profil (à remplacer par votre code)
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(Color.Gray)
+                ) {
+                    // Placeholder pour la photo de profil
+                }
+
+                Column {
+                    // Afficher le titre en gras
+                    Text(
+                        text = post[0],
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold, // Met le texte en gras
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    // Afficher le jeu avec une taille de texte plus grande
+                    Text(
+                        text = post[1],
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+            }
+
+            // Afficher le contenu
+            Text(
+                text = post[2],
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+
+            // Boutons "Like" et "Comment"
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Bouton "Like"
+                Button(
+                    onClick = {
+                        // Action lorsque le bouton "Like" est cliqué
+                    },
+                    colors = ButtonDefaults.buttonColors(background)
+                ) {
+                    Text("Like")
+                }
+
+                // Bouton "Comment"
+                Button(
+                    onClick = {
+                        // Action lorsque le bouton "Comment" est cliqué
+                    },
+                    colors = ButtonDefaults.buttonColors(Color.Gray)
+                ) {
+                    Text("Comment")
+                }
+            }
+        }
     }
 }

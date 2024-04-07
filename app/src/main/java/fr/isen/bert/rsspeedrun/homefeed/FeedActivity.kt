@@ -184,6 +184,7 @@ fun EditPostContent(
         // Bouton pour ajouter le post
         Button(
             onClick = {
+                // c'est ici que tu mets dans ta liste locale pour le moment
                 val newPost = listOf(title, game, content)
                 if (title.isNotBlank() && game.isNotBlank() && content.isNotBlank()) {
                     onAddPost(newPost)
@@ -191,6 +192,8 @@ fun EditPostContent(
                     game = ""
                     content = ""
                 }
+
+                // c'est ici que tu récupères la liste depuis la bdd
                 else {
                     // Afficher une erreur si l'un des champs est vide
                     if (title.isBlank()) {
@@ -210,89 +213,6 @@ fun EditPostContent(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Add Post")
-        }
-    }
-}
-
-
-
-@Composable
-fun PostItem(post: List<String>) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clip(shape = RoundedCornerShape(8.dp))
-            .background(grey)
-            .border(5.dp, secondary),
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Emplacement pour la photo de profil (à remplacer par votre code)
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(Color.Gray)
-                ) {
-                    // Placeholder pour la photo de profil
-                }
-
-                Column {
-                    // Afficher le titre en gras
-                    Text(
-                        text = post[0],
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold, // Met le texte en gras
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                    // Afficher le jeu avec une taille de texte plus grande
-                    Text(
-                        text = post[1],
-                        fontSize = 18.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                }
-            }
-
-            // Afficher le contenu
-            Text(
-                text = post[2],
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-
-            // Boutons "Like" et "Comment"
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Bouton "Like"
-                Button(
-                    onClick = {
-                        // Action lorsque le bouton "Like" est cliqué
-                    },
-                    colors = ButtonDefaults.buttonColors(background)
-                ) {
-                    Text("Like")
-                }
-
-                // Bouton "Comment"
-                Button(
-                    onClick = {
-                        // Action lorsque le bouton "Comment" est cliqué
-                    },
-                    colors = ButtonDefaults.buttonColors(Color.Gray)
-                ) {
-                    Text("Comment")
-                }
-            }
         }
     }
 }
