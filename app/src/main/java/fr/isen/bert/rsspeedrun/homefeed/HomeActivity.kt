@@ -3,6 +3,7 @@ package fr.isen.bert.rsspeedrun.homefeed
 import android.content.Intent
 import androidx.compose.ui.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -13,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +23,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -29,6 +33,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,7 +48,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import com.google.firebase.auth.FirebaseAuth
+import fr.isen.bert.rsspeedrun.data.comment.ManageComment
 import fr.isen.bert.rsspeedrun.data.post.ManagePost
+import fr.isen.bert.rsspeedrun.data.user.CurrentUser
+import fr.isen.bert.rsspeedrun.data.user.ManageUser
 import fr.isen.bert.rsspeedrun.model.Post
 import fr.isen.bert.rsspeedrun.profile.UserProfileActivity
 import fr.isen.bert.rsspeedrun.ui.theme.background
@@ -47,12 +60,39 @@ import fr.isen.bert.rsspeedrun.ui.theme.grey
 import fr.isen.bert.rsspeedrun.ui.theme.secondary
 
 class HomeActivity : ComponentActivity() {
+
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val posts = ManagePost()
+        auth = FirebaseAuth.getInstance()
+
+        var currentUser = auth.currentUser
+        val user = CurrentUser()
+        val chgUser = ManageUser()
+        val post = ManagePost()
+        val comm = ManageComment()
+
+        val context = this
 
         setContent {
+            val postDetails = remember { mutableStateOf<List<Post>>(emptyList()) }
+            LaunchedEffect(Unit) {
+                chgUser.findUser("") { _, id ->
+                    post.listPost(id) { ids ->
+                        val details = mutableListOf<Post>()
+                        for (postId in ids) {
+                            post.getPost(postId) { post ->
+                                if (post != null) {
+                                    details.add(post)
+                                }
+                                postDetails.value = details
+                            }
+                        }
+                    }
+                }
+            }
+
             RSSpeedrunTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -67,25 +107,8 @@ class HomeActivity : ComponentActivity() {
                     ProfileButton()
                     PostButton()
 
-                    chgUser.findUser("") { _, id ->
-                        var postIds:List<String> = emptyList()
-
-                        post.listPost(id) { ids ->
-                            postIds = ids
-
-                            Log.d("UserPostsIds", "IDs des posts de l'utilisateur: $postIds")
-
-                            if (postIds.isNotEmpty())
-                            {
-                                post.findPosts(postIds) { postList ->
-                                    Log.d("Posts", "Liste des posts: ")
-                                    for (unpost in postList) {
-                                        Log.d("Post", "Title: ${unpost.title}, Picture: ${unpost.picture}, " +
-                                                "Description: ${unpost.description}")
-                                    }
-                                }
-                            }
-                        }
+                    Column {
+                        DisplayPostList(postDetails)
                     }
                 }
             }
@@ -189,8 +212,32 @@ fun PostButton() {
     }
 }
 
+
 @Composable
-fun PostItem(post: List<Post>) {
+fun DisplayPostList(postDetails: MutableState<List<Post>>) {
+    val posts = postDetails.value
+
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(posts) { post ->
+            Log.d("Post", "Title: ${post.title}, Picture: ${post.picture}, " +
+                    "Description: ${post.description}")
+            PostItem(
+                listOf(
+                    post.title,
+                    post.picture,
+                    post.description
+                )
+            )
+
+        }
+    }
+}
+
+@Composable
+fun PostItem(post: List<String>) {
     Box(
         modifier = Modifier
             .fillMaxWidth()

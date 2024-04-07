@@ -2,17 +2,13 @@ package fr.isen.bert.rsspeedrun
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.google.firebase.auth.FirebaseAuth
-import fr.isen.bert.rsspeedrun.data.comment.ManageComment
-import fr.isen.bert.rsspeedrun.data.post.ManagePost
-import fr.isen.bert.rsspeedrun.data.user.CurrentUser
-import fr.isen.bert.rsspeedrun.data.user.ManageUser
 import fr.isen.bert.rsspeedrun.homefeed.HomeActivity
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
@@ -20,22 +16,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
-            auth = FirebaseAuth.getInstance()
-
-            var currentUser = auth.currentUser
-            val user = CurrentUser()
-            val chgUser = ManageUser()
-            val post = ManagePost()
-            val comm = ManageComment()
-
             RSSpeedrunTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    Log.d("hello", "world")
+
                     val intent = Intent(this, HomeActivity::class.java)
+
 
                     // Démarrez l'activité HomeActivity
                     startActivity(intent)

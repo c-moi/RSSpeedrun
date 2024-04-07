@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import fr.isen.bert.rsspeedrun.homefeed.HomeActivity
 import java.io.Serializable
 
 class UserProfileActivity : ComponentActivity() {
@@ -102,7 +103,12 @@ fun ProfileScreen(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
             .background(Color(0xFF344347)) // Set the background color for the entire screen
     ) {
         TopAppBar(
-            onBackClick = {}, // Appel de la fonction pour revenir en arrière
+            onBackClick = {
+                val intent = Intent(context, HomeActivity::class.java).apply {
+                    putExtra("UPDATED_PROFILE", userProfileState)
+                }
+                startForResult.launch(intent)
+            }, // Appel de la fonction pour revenir en arrière
             onSettingsClick = {
                 // Launch the settings activity here for result
                 val intent = Intent(context, EditUserProfileActivity::class.java).apply {
