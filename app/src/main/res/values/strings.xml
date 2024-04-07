@@ -1,6 +1,10 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">RSSpeedrun</string>
-    <string name="title_activity_profil_utilisateur">UserProfileActivity</string>
-    <string name="title_activity_edit_profile_user">EditProfileUserActivity</string>
-
+    <string name="title_activity_profile_user">UserProfileActivity</string>
+    <string name="title_activity_edit_profile_user">EditUserProfileActivity</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_profil">ProfilActivity</string>
+    <string name="title_activity_post">PostActivity</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
