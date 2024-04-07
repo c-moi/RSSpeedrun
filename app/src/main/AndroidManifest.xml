@@ -37,22 +37,22 @@
             android:label="@string/title_activity_post"
             android:theme="@style/Theme.RSSpeedrun" />
         <activity
-            android:name=".FeedActivity"
+            android:name=".homefeed.FeedActivity"
             android:exported="false"
             android:label="@string/title_activity_post"
             android:theme="@style/Theme.RSSpeedrun" />
         <activity
-            android:name=".ProfilActivity"
+            android:name=".homefeed.ProfilActivity"
             android:exported="false"
             android:label="@string/title_activity_profil"
             android:theme="@style/Theme.RSSpeedrun" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".homefeed.HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.RSSpeedrun" />
         <activity
-            android:name=".MainActivity"
+            android:name=".homefeed.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.RSSpeedrun">
