@@ -44,6 +44,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.FirebaseAuth
+import fr.isen.bert.rsspeedrun.data.comment.ManageComment
+import fr.isen.bert.rsspeedrun.data.post.ManagePost
+import fr.isen.bert.rsspeedrun.data.user.CurrentUser
+import fr.isen.bert.rsspeedrun.data.user.ManageUser
 import fr.isen.bert.rsspeedrun.profile.UserProfileActivity
 import fr.isen.bert.rsspeedrun.ui.theme.background
 import fr.isen.bert.rsspeedrun.ui.theme.grey
@@ -52,9 +57,19 @@ import fr.isen.bert.rsspeedrun.ui.theme.secondary
 class FeedActivity : ComponentActivity() {
     // Liste mutable pour stocker les posts
     private val postList = mutableStateListOf<List<String>>()
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = FirebaseAuth.getInstance()
+
+        var currentUser = auth.currentUser
+        val user = CurrentUser()
+        val chgUser = ManageUser()
+        val post = ManagePost()
+        val comm = ManageComment()
+
+        val context = this
         setContent {
             Surface(
                 modifier = Modifier.fillMaxSize(),
@@ -62,7 +77,7 @@ class FeedActivity : ComponentActivity() {
             ) {
                 Header()
                 BackButton()
-                ProfileButton()
+                ProfileButton(currentUser)
 
 
                 Column {
@@ -219,50 +234,6 @@ fun EditPostContent(
 }
 
 
-@Composable
-fun DisplayPosts(postsList: List<List<String>>) {
-    LazyColumn (
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 16.dp, horizontal = 10.dp)
-    ){
-        items(postsList) { post ->
-            PostItem(post = post)
-        }
-    }
-}
-
-@Composable
-fun ProfileButton2() {
-    val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 2.dp, vertical = 0.dp), // Ajoute des marges horizontales et verticales
-        horizontalArrangement = Arrangement.Absolute.Left
-    ) {
-        Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à gauche du bouton
-        Box(
-            modifier = Modifier
-                .size(80.dp) // Taille fixe du bouton
-                .background(color = secondary, shape = CircleShape)
-                .clickable {
-                    val intent = Intent(context, UserProfileActivity::class.java)
-                    launcher.launch(intent)
-                },
-            contentAlignment = Alignment.Center // Centrer le contenu dans le cercle
-        ) {
-            Text(
-                text = "P",
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                style = TextStyle(fontSize = 45.sp, fontWeight = FontWeight.Bold) // Ajuster la taille de la police
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à droite du bouton
-    }
-}
 
 @Composable
 fun BackButton() {
@@ -280,8 +251,8 @@ fun BackButton() {
                 .size(80.dp) // Taille fixe du bouton
                 .background(color = secondary, shape = CircleShape)
                 .clickable {
-                    //val intent = Intent(context, HomeActivity::class.java)
-                    //launcher.launch(intent)
+                    val intent = Intent(context, HomeActivity::class.java)
+                    launcher.launch(intent)
                 },
             contentAlignment = Alignment.Center // Centrer le contenu dans le cercle
         ) {
