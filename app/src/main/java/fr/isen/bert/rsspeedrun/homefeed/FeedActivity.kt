@@ -77,7 +77,7 @@ class FeedActivity : ComponentActivity() {
             ) {
                 Header()
                 BackButton()
-                ProfileButton(currentUser)
+                ProfileButton(auth, currentUser)
 
 
                 Column {

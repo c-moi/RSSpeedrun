@@ -78,6 +78,14 @@ class HomeActivity : ComponentActivity() {
 
         setContent {
             val postDetails = remember { mutableStateOf<List<Post>>(emptyList()) }
+            if (currentUser == null) {
+                user.logInUser(auth, "clement.charabot@gmail.com", "cpalebon")
+
+                auth = FirebaseAuth.getInstance()
+                currentUser = auth.currentUser
+            }
+            Log.d("test", "${currentUser?.email}")
+
             LaunchedEffect(Unit) {
                 chgUser.findUser("") { _, id ->
                     post.listPost(id) { ids ->
@@ -101,7 +109,7 @@ class HomeActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Header()
-                    ProfileButton(currentUser)
+                    ProfileButton(auth, currentUser)
                     Column{
 
                         Row(
@@ -153,7 +161,7 @@ fun Header() {
 }
 
 @Composable
-fun ProfileButton(currentUser: FirebaseUser?) {
+fun ProfileButton(auth:FirebaseAuth, currentUser: FirebaseUser?) {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
 
@@ -170,12 +178,14 @@ fun ProfileButton(currentUser: FirebaseUser?) {
                 .background(color = secondary, shape = CircleShape)
                 .clickable {
                     if (currentUser != null) {
+                        Log.d("mail", "${currentUser.email}")
                         val intent = Intent(context, UserProfileActivity::class.java)
+                        intent.putExtra("user", currentUser)
                         launcher.launch(intent)
                     } else {
                         //"faire le lien avec l'activité de log in de sony"
-                        val intent = Intent(context, UserProfileActivity::class.java)
-                        launcher.launch(intent)
+                        //val intent = Intent(context, UserProfileActivity::class.java)
+                        //launcher.launch(intent)
                     }
                 },
             contentAlignment = Alignment.Center // Centrer le contenu dans le cercle

@@ -7,6 +7,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import fr.isen.bert.rsspeedrun.model.Post
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ManagePost {
 
@@ -16,10 +19,14 @@ class ManagePost {
     fun addPost(
         title:String = "",
         picture:String = "",
+        game:String = "",
         desc:String = "",
-        date:String = "",
         userId:String = ""
     ) {
+        val currentDateTime = Date()
+        val dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, Locale.getDefault())
+        val formattedDate = dateFormat.format(currentDateTime)
+
         val idPost = postRef.push()
 
         val post = idPost.key?.let {
@@ -27,8 +34,9 @@ class ManagePost {
                 id = it,
                 title = title,
                 picture = picture,
+                game = game,
                 description = desc,
-                date = date,
+                date = formattedDate,
                 userId = userId,
                 selected = false
             )
@@ -55,6 +63,7 @@ class ManagePost {
                                 postId,
                                 snapshot.child("title").getValue(String::class.java) ?: "",
                                 snapshot.child("picture").getValue(String::class.java) ?: "",
+                                snapshot.child("game").getValue(String::class.java) ?: "",
                                 snapshot.child("description").getValue(String::class.java) ?: "",
                                 snapshot.child("date").getValue(String::class.java) ?: "",
                                 snapshot.child("userId").getValue(String::class.java) ?: "",
@@ -153,6 +162,7 @@ class ManagePost {
                                 postId,
                                 snapshot.child("title").getValue(String::class.java) ?: "",
                                 snapshot.child("picture").getValue(String::class.java) ?: "",
+                                snapshot.child("game").getValue(String::class.java) ?: "",
                                 snapshot.child("description").getValue(String::class.java) ?: "",
                                 snapshot.child("date").getValue(String::class.java) ?: "",
                                 snapshot.child("userId").getValue(String::class.java) ?: "",
