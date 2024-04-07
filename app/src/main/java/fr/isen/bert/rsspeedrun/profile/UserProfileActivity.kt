@@ -105,7 +105,7 @@ fun ProfileScreen(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
         TopAppBar(
             onBackClick = {
                 val intent = Intent(context, HomeActivity::class.java).apply {
-                    //putExtra("CURRENT_PROFILE", userProfileState)
+                    putExtra("UPDATED_PROFILE", userProfileState)
                 }
                 startForResult.launch(intent)
             }, // Appel de la fonction pour revenir en arrière
