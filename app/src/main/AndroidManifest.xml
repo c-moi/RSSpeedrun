@@ -16,6 +16,11 @@
         android:theme="@style/Theme.RSSpeedrun"
         tools:targetApi="31">
         <activity
+            android:name=".homefeed.CommentActivity"
+            android:exported="false"
+            android:label="@string/title_activity_comment"
+            android:theme="@style/Theme.RSSpeedrun" />
+        <activity
             android:name=".data.sign.SignUpActivity"
             android:exported="false"
             android:label="@string/title_activity_sign_up"
