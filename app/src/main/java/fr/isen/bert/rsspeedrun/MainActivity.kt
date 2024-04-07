@@ -24,6 +24,7 @@ import fr.isen.bert.rsspeedrun.data.user.CurrentUser
 import fr.isen.bert.rsspeedrun.data.user.ManageUser
 import fr.isen.bert.rsspeedrun.model.Post
 import fr.isen.bert.rsspeedrun.model.User
+import fr.isen.bert.rsspeedrun.profile.UserProfileActivity
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
 class MainActivity : ComponentActivity() {

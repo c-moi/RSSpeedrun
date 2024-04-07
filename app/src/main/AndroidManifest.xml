@@ -19,12 +19,12 @@
         android:theme="@style/Theme.RSSpeedrun.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name="EditUserProfileActivity"
+            android:name=".profile.EditUserProfileActivity"
             android:exported="false"
             android:label="@string/title_activity_edit_profile_user"
             android:theme="@style/Theme.RSSpeedrun" />
         <activity
-            android:name="UserProfileActivity"
+            android:name=".profile.UserProfileActivity"
             android:exported="false"
             android:label="@string/title_activity_profile_user"
             android:theme="@style/Theme.RSSpeedrun" />
