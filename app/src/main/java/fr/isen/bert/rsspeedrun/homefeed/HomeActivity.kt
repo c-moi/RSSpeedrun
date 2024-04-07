@@ -49,6 +49,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import fr.isen.bert.rsspeedrun.data.comment.ManageComment
 import fr.isen.bert.rsspeedrun.data.post.ManagePost
 import fr.isen.bert.rsspeedrun.data.user.CurrentUser
@@ -100,11 +101,8 @@ class HomeActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Header()
-                    //ArtistCardsList(Post = posts)
 
-                    //Greeting2("zzzzzzz")
-
-                    ProfileButton()
+                    ProfileButton(currentUser)
                     PostButton()
 
                     Column {
@@ -144,7 +142,7 @@ fun Header() {
 }
 
 @Composable
-fun ProfileButton() {
+fun ProfileButton(currentUser: FirebaseUser?) {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
 
@@ -160,8 +158,12 @@ fun ProfileButton() {
                 .size(80.dp) // Taille fixe du bouton
                 .background(color = secondary, shape = CircleShape)
                 .clickable {
-                    val intent = Intent(context, ProfilActivity::class.java)
-                    launcher.launch(intent)
+                    if (currentUser != null) {
+                        val intent = Intent(context, UserProfileActivity::class.java)
+                        launcher.launch(intent)
+                    } else {
+                        TODO("faire le lien avec l'activité de log in de sony")
+                    }
                 },
             contentAlignment = Alignment.Center // Centrer le contenu dans le cercle
         ) {
