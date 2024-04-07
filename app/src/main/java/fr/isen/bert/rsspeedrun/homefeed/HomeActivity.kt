@@ -78,13 +78,6 @@ class HomeActivity : ComponentActivity() {
 
         setContent {
             val postDetails = remember { mutableStateOf<List<Post>>(emptyList()) }
-            if (currentUser == null) {
-                user.logInUser(auth, "clement.charabot@gmail.com", "cpalebon")
-
-                auth = FirebaseAuth.getInstance()
-                currentUser = auth.currentUser
-            }
-            Log.d("test", "${currentUser?.email}")
 
             LaunchedEffect(Unit) {
                 chgUser.findUser("") { _, id ->
