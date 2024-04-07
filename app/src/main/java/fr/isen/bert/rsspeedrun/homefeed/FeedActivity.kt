@@ -1,4 +1,4 @@
-package fr.isen.bert.rsspeedrun
+package fr.isen.bert.rsspeedrun.homefeed
 
 import android.content.Intent
 import android.os.Bundle
@@ -32,6 +32,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -339,4 +341,49 @@ fun ProfileButton2() {
         }
         Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à droite du bouton
     }
+}
+
+@Composable
+fun BackButton() {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 90.dp, vertical = 60.dp), // Ajoute des marges horizontales
+        horizontalArrangement = Arrangement.Absolute.Left
+    ) {
+        Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à gauche du bouton
+        Box(
+            modifier = Modifier
+                .size(80.dp) // Taille fixe du bouton
+                .background(color = secondary, shape = CircleShape)
+                .clickable {
+                    //val intent = Intent(context, HomeActivity::class.java)
+                    //launcher.launch(intent)
+                },
+            contentAlignment = Alignment.Center // Centrer le contenu dans le cercle
+        ) {
+            Text(
+                text = "<",
+                style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.Bold),
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .size(256.dp) // Taille du texte
+                    .padding(horizontal = 30.dp, vertical = 2.dp),
+
+                )
+        }
+        Spacer(modifier = Modifier.width(16.dp)) // Ajoute un espace à droite du bouton
+    }
+}
+@Composable
+fun textFieldColors(): TextFieldColors {
+    return OutlinedTextFieldDefaults.colors(
+        focusedBorderColor = secondary,
+        unfocusedBorderColor = secondary,
+        focusedLabelColor = Color.Green,
+        unfocusedLabelColor = secondary,
+    )
 }

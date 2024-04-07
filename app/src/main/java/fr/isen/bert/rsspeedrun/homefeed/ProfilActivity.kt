@@ -1,4 +1,4 @@
-package fr.isen.bert.rsspeedrun
+package fr.isen.bert.rsspeedrun.homefeed
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
