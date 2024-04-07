@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import fr.isen.bert.rsspeedrun.profile.UserProfileActivity
 import fr.isen.bert.rsspeedrun.ui.theme.RSSpeedrunTheme
 
 class MainActivity : ComponentActivity() {

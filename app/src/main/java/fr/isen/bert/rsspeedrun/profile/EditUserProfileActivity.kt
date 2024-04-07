@@ -1,6 +1,5 @@
-package fr.isen.bert.rsspeedrun
+package fr.isen.bert.rsspeedrun.profile
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -41,7 +40,7 @@ class EditUserProfileActivity : ComponentActivity() {
                 ProfileSettingsScreen(
                     userProfile = userProfile,
                     onSave = { updatedProfile ->
-                        setResult(Activity.RESULT_OK, Intent().apply {
+                        setResult(RESULT_OK, Intent().apply {
                             putExtra("UPDATED_PROFILE", updatedProfile as Serializable)
                         })
                         finish() // Fermez l'activité une fois les modifications enregistrées
