@@ -1,5 +1,4 @@
 package fr.isen.bert.rsspeedrun.data.post
-
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -66,19 +65,43 @@ class ManagePost {
                         }
                     }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("getPost", "Erreur lors de la récupération du post: ${error.message}")
-                    onComplete(null)
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("getPost", "Erreur lors de la récupération du post: ${error.message}")
+                        onComplete(null)
+                    }
+                })
     }
 
-    fun listPostByOwner(userId:String, onComplete: (List<String>) -> Unit) {
-        postRef.orderByChild("userId").equalTo(userId)
-            .addListenerForSingleValueEvent(
-                object:ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
+    fun listPost(userId:String?, onComplete: (List<String>) -> Unit) {
+        if (userId != null) {
+            postRef.orderByChild("userId").equalTo(userId)
+                .addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
 
+                            val postIds = mutableListOf<String>()
+
+                            for (postSnapshot in snapshot.children) {
+                                val postId = postSnapshot.key
+                                postId?.let { postIds.add(it) }
+                            }
+
+                            onComplete(postIds)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e(
+                                "listUserPostsIds",
+                                "Erreur lors de la récupération des IDs des posts de l'utilisateur: ${error.message}"
+                            )
+                            onComplete(emptyList())
+                        }
+                    }
+                )
+        } else {
+            postRef.addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
                         val postIds = mutableListOf<String>()
 
                         for (postSnapshot in snapshot.children) {
@@ -90,11 +113,15 @@ class ManagePost {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Log.e("listUserPostsIds", "Erreur lors de la récupération des IDs des posts de l'utilisateur: ${error.message}")
+                        Log.e(
+                            "listAllPostsIds",
+                            "Erreur lors de la récupération des IDs de tous les posts: ${error.message}"
+                        )
                         onComplete(emptyList())
                     }
                 }
             )
+        }
     }
 
     fun findPosts(postIds:List<String>, onComplete: (List<Post>) -> Unit) {
