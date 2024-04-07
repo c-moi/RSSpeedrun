@@ -1,4 +1,4 @@
-package fr.isen.bert.rsspeedrun
+package fr.isen.bert.rsspeedrun.profile
 
 import android.app.Activity
 import android.content.Intent
