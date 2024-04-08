@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
+<<<<<<< HEAD
     <style name="Theme.RSSpeedrun.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -54,5 +55,7 @@
         <item name="android:textSize">14sp</item>
         <item name="android:singleLine">true</item>
     </style>
+=======
+>>>>>>> e1d11e6c491e961c27e5701039a06a14d4d85e5a
     <style name="Theme.RSSpeedrun" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

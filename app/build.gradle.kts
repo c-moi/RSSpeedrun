@@ -39,7 +39,6 @@ android {
     }
     buildFeatures {
         compose = true
-        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -65,7 +64,10 @@ dependencies {
     implementation(libs.firebase.database)
     implementation("io.coil-kt:coil-compose:1.4.0")
     implementation(libs.androidx.appcompat)
+<<<<<<< HEAD
     implementation(libs.firebase.firestore.ktx)
+=======
+>>>>>>> e1d11e6c491e961c27e5701039a06a14d4d85e5a
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -73,6 +75,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+<<<<<<< HEAD
 
     implementation ("androidx.compose.ui:ui:1.6.4")
     implementation ("androidx.compose.material:material:1.6.4")
@@ -85,4 +88,6 @@ dependencies {
 
     implementation ("io.coil-kt:coil-compose:2.5.0")
     implementation ("androidx.compose.runtime:runtime:1.6.4")
+=======
+>>>>>>> e1d11e6c491e961c27e5701039a06a14d4d85e5a
 }

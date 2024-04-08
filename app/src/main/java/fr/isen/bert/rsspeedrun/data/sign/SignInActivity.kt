@@ -1,4 +1,4 @@
-package fr.isen.bert.rsspeedrun
+package fr.isen.bert.rsspeedrun.sign
 
 import android.content.ContentValues.TAG
 import android.content.Intent
