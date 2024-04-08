@@ -1,4 +1,4 @@
-package fr.isen.bert.rsspeedrun.sign
+package fr.isen.bert.rsspeedrun
 
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -18,6 +18,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import fr.isen.bert.rsspeedrun.databinding.ActivitySignInBinding
+import fr.isen.bert.rsspeedrun.homefeed.HomeActivity
 
 class SignInActivity : AppCompatActivity() {
 
@@ -54,7 +55,7 @@ class SignInActivity : AppCompatActivity() {
                                 val bouton =
                                     findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.button)
                                 bouton.setOnClickListener {
-                                    val intent = Intent(this, MainActivity::class.java)
+                                    val intent = Intent(this, HomeActivity ::class.java)
                                     startActivity(intent)
                                 }
                             } else {
@@ -83,8 +84,6 @@ class SignInActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
-
 
 
 

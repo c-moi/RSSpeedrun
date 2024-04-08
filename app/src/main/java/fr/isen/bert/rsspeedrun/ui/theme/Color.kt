@@ -15,4 +15,3 @@ val white = Color(0xFFFFFFFF)
 val secondary = Color(0xFF6FCB9A)
 
 val background_grey= Color( 0xFF344347)
-val grey= Color(  0xFF9DADAC)

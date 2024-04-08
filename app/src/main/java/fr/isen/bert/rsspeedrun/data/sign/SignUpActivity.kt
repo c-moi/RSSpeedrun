@@ -1,4 +1,4 @@
-package fr.isen.bert.rsspeedrun.sign
+package fr.isen.bert.rsspeedrun
 
 import android.content.Intent
 import android.os.Bundle
